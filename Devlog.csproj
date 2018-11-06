@@ -82,6 +82,7 @@
     <Compile Include="..\TrickyUnits\mkl.cs">
       <Link>Dependencies\TrickyUnits\mkl.cs</Link>
     </Compile>
+    <Compile Include="Command.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />

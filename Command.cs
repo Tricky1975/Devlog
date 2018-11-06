@@ -23,26 +23,26 @@
 // Version: 18.11.06
 // EndLic
 ﻿using System;
+using System.Collections.Generic;
 using TrickyUnits;
-using Gtk;
+using TrickyUnits.GTK;
 
 namespace Devlog
 {
-    class MainClass
+
+    delegate void MyCommand(string arg);
+
+    static class CommandClass
     {
-        static void InitSubClasses(){
-            MKL.Version("Development Log - Devlog.cs","18.11.06");
-            MKL.Lic    ("Development Log - Devlog.cs","GNU General Public License 3");
-            CommandClass.Init();
+        static public readonly Dictionary<string, MyCommand> Commands = new Dictionary<string, MyCommand>();
+
+        static void Annoy(string arg) => QuickGTK.Info(arg); // This is just a test ;)
+
+        static public void Init(){
+            MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
+            MKL.Version("Development Log - Command.cs","18.11.06");
+            Commands["ANNOY"] = Annoy;
         }
 
-        public static void Main(string[] args)
-        {
-            // TODO: args recognition!
-            Application.Init();
-            MainWindow win = new MainWindow();
-            win.Show();
-            Application.Run();
-        }
     }
 }
