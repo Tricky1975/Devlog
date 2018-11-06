@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devlog", "Devlog.csproj", "{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}.Debug|x86.ActiveCfg = Debug|x86
+		{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}.Debug|x86.Build.0 = Debug|x86
+		{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}.Release|x86.ActiveCfg = Release|x86
+		{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+EndGlobal

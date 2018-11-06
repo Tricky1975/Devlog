@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Devlog</RootNamespace>
+    <AssemblyName>Devlog</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glade-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="atk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="gtk-gui\MainWindow.cs" />
+    <Compile Include="Devlog.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\TrickyUnits\Dirry.cs">
+      <Link>Dependencies\TrickyUnits\Dirry.cs</Link>
+    </Compile>
+    <Compile Include="..\TrickyUnits\GINI Is Not Ini.cs">
+      <Link>Dependencies\TrickyUnits\GINI Is Not Ini.cs</Link>
+    </Compile>
+    <Compile Include="..\TrickyUnits\OpenURI.cs">
+      <Link>Dependencies\TrickyUnits\OpenURI.cs</Link>
+    </Compile>
+    <Compile Include="..\TrickyUnits\qstr.cs">
+      <Link>Dependencies\TrickyUnits\qstr.cs</Link>
+    </Compile>
+    <Compile Include="..\TrickyUnits\qstream.cs">
+      <Link>Dependencies\TrickyUnits\qstream.cs</Link>
+    </Compile>
+    <Compile Include="..\TrickyUnits\gtk\ListBox.cs">
+      <Link>Dependencies\TrickyUnits\gtk\ListBox.cs</Link>
+    </Compile>
+    <Compile Include="..\TrickyUnits\gtk\QuickGTK.cs">
+      <Link>Dependencies\TrickyUnits\gtk\QuickGTK.cs</Link>
+    </Compile>
+    <Compile Include="..\TrickyUnits\mkl.cs">
+      <Link>Dependencies\TrickyUnits\mkl.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dependencies\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
