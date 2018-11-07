@@ -55,9 +55,10 @@ namespace Devlog
             var superior = new HBox();
             var sidebar = new VBox(); sidebar.SetSizeRequest(200, 770);
             var mainarea = new VBox();
+            var cscroll = new ScrolledWindow();
             win.Add(overlord);
             overlord.Add(superior); superior.SetSizeRequest(1200, 600);
-            overlord.Add(Console); Console.SetSizeRequest(1200, 170);
+            overlord.Add(cscroll); cscroll.SetSizeRequest(1200, 170); cscroll.Add(Console);
             overlord.Add(Prompt); Prompt.SetSizeRequest(1200, 30);
             Console.ModifyBase(StateType.Normal, new Gdk.Color(0, 20, 0));
             Console.ModifyText(StateType.Normal, new Gdk.Color(0, 255, 0));
