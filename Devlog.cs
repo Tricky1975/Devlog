@@ -20,29 +20,28 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.06
+// Version: 18.11.07
 // EndLic
 ﻿using System;
 using TrickyUnits;
-using Gtk;
+
 
 namespace Devlog
 {
     class MainClass
     {
         static void InitSubClasses(){
-            MKL.Version("Development Log - Devlog.cs","18.11.06");
+            MKL.Version("Development Log - Devlog.cs","18.11.07");
             MKL.Lic    ("Development Log - Devlog.cs","GNU General Public License 3");
             CommandClass.Init();
         }
 
         public static void Main(string[] args)
         {
+            InitSubClasses();
             // TODO: args recognition!
-            Application.Init();
-            MainWindow win = new MainWindow();
-            win.Show();
-            Application.Run();
+            GUI.Init();
+            GUI.Start();
         }
     }
 }

@@ -10,6 +10,7 @@ public partial class MainWindow : Gtk.Window
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
     {
+        Devlog.CommandClass.Bye("");
         Application.Quit();
         a.RetVal = true;
     }

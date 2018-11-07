@@ -83,6 +83,7 @@
       <Link>Dependencies\TrickyUnits\mkl.cs</Link>
     </Compile>
     <Compile Include="Command.cs" />
+    <Compile Include="GUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />

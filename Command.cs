@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.06
+// Version: 18.11.07
 // EndLic
 ﻿using System;
 using System.Collections.Generic;
@@ -38,10 +38,16 @@ namespace Devlog
 
         static void Annoy(string arg) => QuickGTK.Info(arg); // This is just a test ;)
 
+        static public void Bye(string unneeded){
+            // TODO: Some saving stuff will take place here later!
+        }
+
         static public void Init(){
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.06");
+            MKL.Version("Development Log - Command.cs","18.11.07");
             Commands["ANNOY"] = Annoy;
+            Commands["BYE"] = Bye;
+            Commands["SAY"] = GUI.WriteLn;
         }
 
     }
