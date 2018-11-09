@@ -56,10 +56,15 @@ namespace Devlog
             var sidebar = new VBox(); sidebar.SetSizeRequest(200, 770);
             var mainarea = new VBox();
             var cscroll = new ScrolledWindow();
+            var promptbar = new HBox();
             win.Add(overlord);
             overlord.Add(superior); superior.SetSizeRequest(1200, 600);
             overlord.Add(cscroll); cscroll.SetSizeRequest(1200, 170); cscroll.Add(Console);
-            overlord.Add(Prompt); Prompt.SetSizeRequest(1200, 30);
+            overlord.Add(promptbar); promptbar.SetSizeRequest(1200, 30); promptbar.Add(Prompt);
+            var pOk = new Button("Ok");
+            pOk.SetSizeRequest(50, 30);
+            Prompt.SetSizeRequest(1150, 30);
+            promptbar.Add(pOk);
             Console.ModifyBase(StateType.Normal, new Gdk.Color(0, 20, 0));
             Console.ModifyText(StateType.Normal, new Gdk.Color(0, 255, 0));
             Prompt.ModifyBase(StateType.Normal, new Gdk.Color(25, 18, 0));
@@ -73,7 +78,7 @@ namespace Devlog
             NewTab("AutoPrefix");
             WriteLn("Welcome to Devlog!");
             WriteLn("Coded by: Tricky");
-            WriteLn($"(c) 2016-20{qstr.Left(MKL.Newest)} Jeroen P. Broks");
+            WriteLn($"(c) 2016-20{qstr.Left(MKL.Newest,2)} Jeroen P. Broks");
             WriteLn("Released under the terms of the General Public License v3");
 //#if KEYDEBUG
             //WriteLn("KEYDEBUG is set!");
