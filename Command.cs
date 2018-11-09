@@ -22,6 +22,7 @@
 // 	to the project the exceptions are needed for.
 // Version: 18.11.09
 // EndLic
+
 ﻿using System;
 using System.Collections.Generic;
 using TrickyUnits;
