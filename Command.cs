@@ -60,6 +60,7 @@ namespace Devlog
             Commands["BYE"] = Bye;
             Commands["SAY"] = GUI.WriteLn;
             Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };
+            Commands["YULERIA"] = delegate { Annoy("Yuleria's rule of revenge:\nAn amateur kills people! A professional makes them suffer!"); };
             Commands["GLOBALCONFIG"] = GlobalConfig;
         }
 

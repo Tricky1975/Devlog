@@ -31,6 +31,8 @@ using TrickyUnits;
 using Gtk;
 namespace Devlog
 {
+    delegate void GenCallBack(object sender, EventArgs a);
+
     public static class GUI
     {
         static readonly List<Widget> RequireProject = new List<Widget>();
@@ -38,10 +40,44 @@ namespace Devlog
         static Notebook Tabber;
         static TextView Console;
         static Entry Prompt;
+        static bool AllowEdit = true;
+        static dvProject CurrentProject { get { return null; } }// Acutal return comes later!
+        static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
+
+
+        static Dictionary<string, Entry> GenEntries = new Dictionary<string, Entry>();
 
         static void AndACTION(object sender,EventArgs a){
             CommandClass.DoCommand(Prompt.Text);
             Prompt.Text = "";
+        }
+
+        static Entry GeneralAdd(VBox Panel, string codename, string Caption){ //,GenCallBack MyCallBack){
+            var e = new Entry();
+            var l = new Label(Caption);
+            l.ModifyFg(StateType.Normal, EntryLabel);
+            var b = new HBox();
+            b.SetSizeRequest(1000, 30);
+            e.SetSizeRequest(500, 30);
+            l.SetSizeRequest(500, 30);
+            b.Add(l);
+            b.Add(e);
+            Panel.Add(b);
+            RequireProject.Add(e);
+            GenEntries[codename] = e;
+            // e.Changed += MyCallBack; // C# FAILED!
+            return e;
+        }
+        static void GeneralInit(VBox Panel){
+            Panel.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 20));
+            GeneralAdd(Panel, "GITHUB", "Github Repository:").Changed += delegate (object s, EventArgs e) { if (AllowEdit) { CurrentProject.GitHub = ((Entry)s).Text; } };
+            GeneralAdd(Panel, "TARGET", "Site Target Dir:").Changed += delegate (object s, EventArgs e) { if (AllowEdit) { CurrentProject.Target = ((Entry)s).Text; } };
+            GeneralAdd(Panel, "TEMPLATE", "Template file:").Changed += delegate (object s, EventArgs e) { if (AllowEdit) { CurrentProject.Template = ((Entry)s).Text; } };
+        }
+
+        static void AutoEnable(){
+            var b = CurrentProject != null;
+            foreach (Widget w in RequireProject) w.Sensitive = b;
         }
 
         public static void Init()
@@ -55,6 +91,7 @@ namespace Devlog
             win.Resizable = false;
             win.Title = $"Development log - version {MKL.Newest} - Coded by: Tricky";
             Tabber = new Notebook(); Tabber.SetSizeRequest(1000, 770);
+            Tabber.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 20));
             Console = new TextView();
             Prompt = new Entry();
             var overlord = new VBox();
@@ -79,7 +116,7 @@ namespace Devlog
             superior.Add(sidebar);
             superior.Add(mainarea);
             mainarea.Add(Tabber);
-            NewTab("General");
+            GeneralInit(NewTab("General"));
             NewTab("Tags");
             NewTab("Entries");
             NewTab("AutoPrefix");
@@ -87,6 +124,7 @@ namespace Devlog
             WriteLn("Coded by: Tricky");
             WriteLn($"(c) 2016-20{qstr.Left(MKL.Newest,2)} Jeroen P. Broks");
             WriteLn("Released under the terms of the General Public License v3");
+            AutoEnable();
 //#if KEYDEBUG
             //WriteLn("KEYDEBUG is set!");
             //Prompt.KeyPressEvent += KeyDebug;
