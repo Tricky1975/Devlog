@@ -43,6 +43,15 @@ namespace Devlog
             // TODO: Some saving stuff will take place here later!
         }
 
+        static void GlobalConfig(string cfga){
+            var c = cfga.Trim();
+            var p = c.IndexOf('=');
+            var cfield = c.Substring(0, p).ToUpper();
+            var cvalue = c.Substring(p + 1);
+            MainClass.DefConfig(cfield, cvalue);
+            GUI.WriteLn($"Global Config Variable: {cfield} = {cvalue}");
+        }
+
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
@@ -50,8 +59,8 @@ namespace Devlog
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
             Commands["SAY"] = GUI.WriteLn;
-            Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };            
-
+            Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };
+            Commands["GLOBALCONFIG"] = GlobalConfig;
         }
 
         static void ThrowError(string error){
@@ -62,12 +71,16 @@ namespace Devlog
         static public void DoCommand(string command){
             var c = command.Trim();
             var p = c.IndexOf(' ');
-            var cmd = c.Substring(0, p).ToUpper();
-            var arg = c.Substring(p + 1);
+            string cmd;
+            string arg;
+            if (p < 0) { cmd = c.ToUpper(); arg = ""; } else {
+                cmd = c.Substring(0, p).ToUpper();
+                arg = c.Substring(p + 1);
+            }
             if (!Commands.ContainsKey(cmd)) ThrowError($"I do not understand the command {cmd}!!"); else Commands[cmd](arg);            
         }
 
-        static public void DoCommands(string[] commands){
+        static public void DoCommands(string[] commands) {
             foreach (string cmd in commands) DoCommand(cmd);
         }
 

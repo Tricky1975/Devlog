@@ -30,17 +30,59 @@ namespace Devlog
 {
     class MainClass
     {
+        readonly static string configfile = Dirry.C("$AppSupport$/.DevlogConfig.GINI");
+        static TGINI vConfig = new TGINI();
+
         static void InitSubClasses(){
             MKL.Version("Development Log - Devlog.cs","18.11.07");
             MKL.Lic    ("Development Log - Devlog.cs","GNU General Public License 3");
             CommandClass.Init();
         }
 
+        static void SaveConfig() => vConfig.SaveSource(configfile);
+
+        static void LoadConfig(){
+            if (!System.IO.File.Exists(configfile)) SaveConfig();
+            vConfig = GINI.ReadFromFile(configfile);
+            var code = "UNK";
+            var name = "UNKNOWN";
+            if (vConfig.C("PLATFORM")=="")
+            {
+                int p = (int)Environment.OSVersion.Platform;
+                if ((p == 4) || (p == 6) || (p == 128))
+                {
+                    //Console.WriteLine("Running on Unix");
+                    if (p==4){
+                        code = "MAC";
+                        name = "a Mac";
+                    } else {
+                        code = "UNIX";
+                        name = "Unix";
+                    }
+                }
+                else
+                {
+                    //Console.WriteLine("NOT running on Unix");
+                }
+                TrickyUnits.GTK.QuickGTK.Info($"It appears you are running this on {name}. If this is not correct, please correct this in the file: {configfile}.\n\n(I will not ask this again. I had to note this, as this tool has been written in C# and C# has pretty poor platform recognition).");
+                DefConfig("platform", code);
+
+            }
+        }
+
+        static public void DefConfig(string f,string v){
+            vConfig.D(f, v);
+            SaveConfig();
+        }
+
+        static public string GetConfig(string f) => vConfig.C(f);
+
         public static void Main(string[] args)
         {
             InitSubClasses();
             // TODO: args recognition!
             GUI.Init();
+            LoadConfig();
             GUI.Start();
         }
     }
