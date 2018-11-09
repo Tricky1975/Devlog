@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.07
+// Version: 18.11.09
 // EndLic
 ﻿using System;
 using System.Collections.Generic;
@@ -42,12 +42,32 @@ namespace Devlog
             // TODO: Some saving stuff will take place here later!
         }
 
-        static public void Init(){
+        static public void Init()
+        {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.07");
+            MKL.Version("Development Log - Command.cs","18.11.09");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
             Commands["SAY"] = GUI.WriteLn;
+            Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };            
+
+        }
+
+        static void ThrowError(string error){
+            GUI.WriteLn($"ERROR:\t{error}");
+            QuickGTK.Error($"!!ERROR!!\n\n{error}");
+        }
+
+        static public void DoCommand(string command){
+            var c = command.Trim();
+            var p = c.IndexOf(' ');
+            var cmd = c.Substring(0, p).ToUpper();
+            var arg = c.Substring(p + 1);
+            if (!Commands.ContainsKey(cmd)) ThrowError($"I do not understand the command {cmd}!!"); else Commands[cmd](arg);            
+        }
+
+        static public void DoCommands(string[] commands){
+            foreach (string cmd in commands) DoCommand(cmd);
         }
 
     }

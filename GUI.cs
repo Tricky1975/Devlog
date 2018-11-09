@@ -20,11 +20,12 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.07
+// Version: 18.11.09
 // EndLic
 
 //#define KEYDEBUG // crap!
 
+using System;
 ﻿using System.Collections.Generic;
 using TrickyUnits;
 using Gtk;
@@ -38,10 +39,15 @@ namespace Devlog
         static TextView Console;
         static Entry Prompt;
 
+        static void AndACTION(object sender,EventArgs a){
+            CommandClass.DoCommand(Prompt.Text);
+            Prompt.Text = "";
+        }
+
         public static void Init()
         {
-            MKL.Lic("Development Log - GUI.cs", "GNU General Public License 3");
-            MKL.Version("Development Log - GUI.cs", "18.11.07");
+            MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
+            MKL.Version("Development Log - GUI.cs","18.11.09");
             Application.Init();
             win = new MainWindow();
             win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
@@ -63,6 +69,7 @@ namespace Devlog
             overlord.Add(promptbar); promptbar.SetSizeRequest(1200, 30); promptbar.Add(Prompt);
             var pOk = new Button("Ok");
             pOk.SetSizeRequest(50, 30);
+            pOk.Clicked += AndACTION;
             Prompt.SetSizeRequest(1150, 30);
             promptbar.Add(pOk);
             Console.ModifyBase(StateType.Normal, new Gdk.Color(0, 20, 0));
