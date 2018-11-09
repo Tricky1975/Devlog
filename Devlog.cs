@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.07
+// Version: 18.11.10
 // EndLic
 ﻿using System;
 using TrickyUnits;
@@ -32,11 +32,13 @@ namespace Devlog
     {
         readonly static string configfile = Dirry.C("$AppSupport$/.DevlogConfig.GINI");
         static TGINI vConfig = new TGINI();
+        static public string Platform { get => vConfig.C("PLATFORM"); }
 
         static void InitSubClasses(){
-            MKL.Version("Development Log - Devlog.cs","18.11.07");
+            MKL.Version("Development Log - Devlog.cs","18.11.10");
             MKL.Lic    ("Development Log - Devlog.cs","GNU General Public License 3");
             CommandClass.Init();
+            dvProject.Hi();
         }
 
         static void SaveConfig() => vConfig.SaveSource(configfile);
@@ -66,7 +68,6 @@ namespace Devlog
                 }
                 TrickyUnits.GTK.QuickGTK.Info($"It appears you are running this on {name}. If this is not correct, please correct this in the file: {configfile}.\n\n(I will not ask this again. I had to note this, as this tool has been written in C# and C# has pretty poor platform recognition).");
                 DefConfig("platform", code);
-
             }
         }
 
