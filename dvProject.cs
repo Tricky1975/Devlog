@@ -29,6 +29,20 @@ using TrickyUnits;
 
 namespace Devlog
 {
+    class dvEntry{
+
+        void ParseText(){
+            // Actual parsing comes later!
+        }
+
+        public readonly Dictionary<string, string> core = new Dictionary<string, string>();
+        public string Tag { get => core["TAG"]; set { core["TAG"] = value; }}
+        public string Pure { get => core["PURE"]; set { core["PURE"] = value; ParseText(); }}
+        public string Text { get => core["TEXT"]; } // No set, as this is the result as parsing from "pure".
+        public string Date { get => core["DATE"]; } // No midifications needed here (yet)
+        public string Time { get => core["TIME"]; }
+    }
+
     class dvProject
     {
         public TGINI Data = new TGINI();
