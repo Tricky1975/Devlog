@@ -85,9 +85,20 @@ namespace Devlog
 
         static public void RenewProjects(){
             ProjectList.Clear();
-            if (MainClass.GetConfig("WORKSPACE")=="") {
+            string[] filelist;
+            string workspace = MainClass.GetConfig("WORKSPACE");
+            if (workspace=="") {
                 QuickGTK.Error("I don't know where to look for projects! Please use the command GLOBALCONFIG WORKSPACE=/home/username/MyWorkSpace/ or something like that");
                 return;
+            }
+            try{
+                filelist = FileList.GetDir(workspace+"/Projects",0,true,false);
+            } catch {
+                QuickGTK.Error("Reading the project folder failed! Has it been properly configured?");
+                return;
+            }
+            foreach(string f in filelist){
+                if (qstr.Suffixed(f, ".prj")) ProjectList.AddItem(qstr.Left(f,f.Length-4));
             }
         }
 
@@ -103,7 +114,7 @@ namespace Devlog
             //stream.Dispose();
             stream = asm.GetManifestResourceStream("Devlog.Mascot.Mascot.png");
             var mascot = new Image(stream);
-            mascot.SetAlignment(0, 2);
+            mascot.SetAlignment((float)0.5, 2);
             stream.Dispose();
             sidebar.Add(sw);
             sidebar.Add(mascot);

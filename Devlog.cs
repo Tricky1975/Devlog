@@ -33,6 +33,7 @@ namespace Devlog
         readonly static string configfile = Dirry.C("$AppSupport$/.DevlogConfig.GINI");
         static TGINI vConfig = new TGINI();
         static public string Platform { get => vConfig.C("PLATFORM"); }
+        static public string WorkSpace { get => vConfig.C("WORKSPACE"); }
 
         static void InitSubClasses(){
             MKL.Version("Development Log - Devlog.cs","18.11.10");
@@ -84,6 +85,7 @@ namespace Devlog
             // TODO: args recognition!
             GUI.Init();
             LoadConfig();
+            GUI.RenewProjects();
             GUI.Start();
         }
     }

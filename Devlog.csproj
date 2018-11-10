@@ -86,6 +86,9 @@
     <Compile Include="Command.cs" />
     <Compile Include="GUI.cs" />
     <Compile Include="dvProject.cs" />
+    <Compile Include="..\TrickyUnits\FileList.cs">
+      <Link>Dependencies\TrickyUnits\FileList.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />
