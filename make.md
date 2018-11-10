@@ -10,6 +10,11 @@ git clone https://github.com/tricky1975/trickyunits_csharp ../trickyunits
 
 This code uses GTK Sharp 2, so I guess it's evident you make sure that's installed too :P
 
+# Mascot.png
+
+As the picture in the original binary does NOT have a free license, it has NOT been included in the github repository. However you won't be able to compile without such a picture.
+Any image in png format preferably 229x314 pixels will do, and name it Mascot.png and place it in the Mascot folder, and then the compiler will take care of the rest.
+
 # Make
 
 When that's done all I gotta do is type "make"?
