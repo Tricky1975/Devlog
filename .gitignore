@@ -51,3 +51,7 @@ MKL*
 
 # Mascot
 Mascot.png
+
+# Don't include the compile log
+CompileLog.txt
+

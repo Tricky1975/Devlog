@@ -2,7 +2,7 @@ all:bin/Release/Devlog.exe Release/Devlog.exe Release/Devlog.app/Contents/MacOS/
 
 bin/Release/Devlog.exe:*cs* *.sln ../TrickyUnits/*.cs ../TrickyUnits/gtk/*
 	@echo Compiling Devlog
-	@msbuild /p:Configuration=Release Devlog.sln
+	@msbuild /p:Configuration=Release Devlog.sln > CompileLog.txt
 
 Release/Devlog.exe:bin/Release/Devlog.exe
 	@mkdir -p Release
