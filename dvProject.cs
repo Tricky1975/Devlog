@@ -23,7 +23,7 @@
 // Version: 18.11.10
 // EndLic
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TrickyUnits;
 
@@ -31,16 +31,54 @@ namespace Devlog
 {
     class dvEntry{
 
+        bool DoUpdate = true;
+
         void ParseText(){
             // Actual parsing comes later!
         }
 
+        void UpdateMe(){
+            if (!DoUpdate) return;
+            // TODO: Actual updating
+        }
+
         public readonly Dictionary<string, string> core = new Dictionary<string, string>();
-        public string Tag { get => core["TAG"]; set { core["TAG"] = value; }}
-        public string Pure { get => core["PURE"]; set { core["PURE"] = value; ParseText(); }}
+        public string Tag { get => core["TAG"]; set { core["TAG"] = value; UpdateMe(); }}
+        public string Pure { get => core["PURE"]; set { core["PURE"] = value; ParseText(); UpdateMe(); }}
         public string Text { get => core["TEXT"]; } // No set, as this is the result as parsing from "pure".
         public string Date { get => core["DATE"]; } // No midifications needed here (yet)
         public string Time { get => core["TIME"]; }
+        public string Modified { get { if (core.ContainsKey("MODIFIED")) return core["MODIFIED"]; return ""; } set { if (!core.ContainsKey("MODIFIED")) core["MODIFIED"] = value; else core["MODIFIED"] += $"; {value}"; } }
+
+        // Creates new entry
+        public dvEntry(string atag,string apure, string byProject){
+            DoUpdate = false; // must be first
+            Tag = atag;
+            Pure = apure;
+            DoUpdate = true;  // must be last
+        }
+
+        // Obtains entry from .Entries file
+        public dvEntry(int id,string byProject){
+            DoUpdate = false; // must be first
+            int tid = -10;
+            foreach(string fline in QOpen.LoadString($"{MainClass.WorkSpace}/Entries/{byProject}.Entries").Split('\n')){
+                var line = fline.Trim();
+                if (line != ""){
+                    if (line == "PUSH"){
+                        if (tid == id) { return; }
+                    } else {
+                        var pos = line.IndexOf(':');
+                        if (pos < 0) Console.WriteLine("WARNING! Malformed line in entry file!"); else {
+                            var key = line.Substring(0, pos).ToUpper().Trim();
+                            var value = line.Substring(pos).Trim();
+                            if (key == "NEW") tid = qstr.ToInt(value); else if (tid==id) core[key.ToUpper()] = value;
+                        }
+                    }
+                }
+            }
+            DoUpdate = true;  // must be last
+        }
     }
 
     class dvProject
