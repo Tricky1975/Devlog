@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.09
+// Version: 18.11.10
 // EndLic
 
 //#define KEYDEBUG // crap!
@@ -83,7 +83,7 @@ namespace Devlog
         public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
-            MKL.Version("Development Log - GUI.cs","18.11.09");
+            MKL.Version("Development Log - GUI.cs","18.11.10");
             Application.Init();
             win = new MainWindow();
             win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
@@ -93,6 +93,7 @@ namespace Devlog
             Tabber = new Notebook(); Tabber.SetSizeRequest(1000, 770);
             Tabber.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 20));
             Console = new TextView();
+            Console.Editable = false;
             Prompt = new Entry();
             var overlord = new VBox();
             var superior = new HBox();
@@ -123,7 +124,7 @@ namespace Devlog
             WriteLn("Welcome to Devlog!");
             WriteLn("Coded by: Tricky");
             WriteLn($"(c) 2016-20{qstr.Left(MKL.Newest,2)} Jeroen P. Broks");
-            WriteLn("Released under the terms of the General Public License v3");
+            WriteLn("Released under the terms of the General Public License v3\n");
             AutoEnable();
 //#if KEYDEBUG
             //WriteLn("KEYDEBUG is set!");
