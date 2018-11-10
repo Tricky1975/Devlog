@@ -201,6 +201,7 @@ namespace Devlog
         public static VBox NewTab(string caption){
             var ret = new VBox();
             var lab = new Label(caption);
+            lab.ModifyFg(StateType.Normal, new Gdk.Color(255, 255, 0));
             Tabber.AppendPage(ret, lab);
             return ret;
         }
