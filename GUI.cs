@@ -26,8 +26,10 @@
 //#define KEYDEBUG // crap!
 
 using System;
-﻿using System.Collections.Generic;
+using System.Reflection;
+using System.Collections.Generic;
 using TrickyUnits;
+using TrickyUnits.GTK;
 using Gtk;
 namespace Devlog
 {
@@ -40,6 +42,7 @@ namespace Devlog
         static Notebook Tabber;
         static TextView Console;
         static Entry Prompt;
+        static ListBox ProjectList;
         static bool AllowEdit = true;
         static dvProject CurrentProject { get { return null; } }// Acutal return comes later!
         static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
@@ -80,6 +83,32 @@ namespace Devlog
             foreach (Widget w in RequireProject) w.Sensitive = b;
         }
 
+        static public void RenewProjects(){
+            ProjectList.Clear();
+            if (MainClass.GetConfig("WORKSPACE")=="") {
+                QuickGTK.Error("I don't know where to look for projects! Please use the command GLOBALCONFIG WORKSPACE=/home/username/MyWorkSpace/ or something like that");
+                return;
+            }
+        }
+
+        static void InitSidebar(VBox sidebar){
+            var lb = new ListBox("Projects"); ProjectList = lb;
+            var sw = new ScrolledWindow();
+            sw.Add(lb.Gadget);
+            Assembly asm = Assembly.GetExecutingAssembly();
+            System.IO.Stream stream;
+            //= asm.GetManifestResourceStream("MyData.Properties.Icon.png");
+            //Gdk.Pixbuf PIX = new Gdk.Pixbuf(stream);
+            //win.Icon = PIX;
+            //stream.Dispose();
+            stream = asm.GetManifestResourceStream("Devlog.Mascot.Mascot.png");
+            var mascot = new Image(stream);
+            mascot.SetAlignment(0, 2);
+            stream.Dispose();
+            sidebar.Add(sw);
+            sidebar.Add(mascot);
+        }
+
         public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
@@ -101,6 +130,7 @@ namespace Devlog
             var mainarea = new VBox();
             var cscroll = new ScrolledWindow();
             var promptbar = new HBox();
+            InitSidebar(sidebar);
             win.Add(overlord);
             overlord.Add(superior); superior.SetSizeRequest(1200, 600);
             overlord.Add(cscroll); cscroll.SetSizeRequest(1200, 170); cscroll.Add(Console);
