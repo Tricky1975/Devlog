@@ -138,7 +138,7 @@ namespace Devlog
         }
 
         static void TagsInit(VBox panel){
-            TagList = new ListBox();
+            TagList = new ListBox("Tags");
             TagEditBox = new HBox();
             var sw = new ScrolledWindow(); panel.Add(sw);
             var tv = TagList.Gadget; sw.Add(tv);
