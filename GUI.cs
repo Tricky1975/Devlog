@@ -38,11 +38,16 @@ namespace Devlog
     public static class GUI
     {
         static readonly List<Widget> RequireProject = new List<Widget>();
+        static readonly List<Widget> RequireTag = new List<Widget>();
         static MainWindow win;
         static Notebook Tabber;
         static TextView Console;
         static Entry Prompt;
         static ListBox ProjectList;
+        static ListBox TagList;
+        static HBox TagEditBox;
+        static Entry TagEditHead;
+        static Entry TagEditEntry;
         static bool AllowEdit = true;
         static dvProject CurrentProject { get { return null; } }// Acutal return comes later!
         static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
@@ -120,6 +125,23 @@ namespace Devlog
             sidebar.Add(mascot);
         }
 
+        static void TagsInit(VBox panel){
+            TagList = new ListBox();
+            TagEditBox = new HBox();
+            var sw = new ScrolledWindow(); panel.Add(sw);
+            var tv = TagList.Gadget; sw.Add(tv);
+            var lb1 = new Label("Head"); lb1.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
+            var lb2 = new Label("Content"); lb2.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
+            TagEditHead = new Entry(); RequireTag.Add(TagEditHead);
+            TagEditEntry = new Entry(); RequireTag.Add(TagEditEntry);
+            TagEditBox.Add(lb1);
+            TagEditBox.Add(TagEditHead);
+            TagEditBox.Add(lb2);
+            TagEditBox.Add(TagEditEntry);
+            panel.Add(TagEditBox);
+
+        }
+
         public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
@@ -159,7 +181,7 @@ namespace Devlog
             superior.Add(mainarea);
             mainarea.Add(Tabber);
             GeneralInit(NewTab("General"));
-            NewTab("Tags");
+            TagsInit(NewTab("Tags"));
             NewTab("Entries");
             NewTab("AutoPrefix");
             WriteLn("Welcome to Devlog!");
