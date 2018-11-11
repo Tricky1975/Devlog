@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.10
+// Version: 18.11.11
 // EndLic
 
 using System;
@@ -119,7 +119,7 @@ namespace Devlog
         public string Template { get => Data.C($"TARGET.{MainClass.Platform}"); set { Data.D($"TARGET.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","18.11.10");
+            MKL.Version("Development Log - dvProject.cs","18.11.11");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
