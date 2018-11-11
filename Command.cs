@@ -62,6 +62,7 @@ namespace Devlog
             Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };
             Commands["YULERIA"] = delegate { Annoy("Yuleria's rule of revenge:\nAn amateur kills people! A professional makes them suffer!"); };
             Commands["GLOBALCONFIG"] = GlobalConfig;
+            Commands["USE"] = delegate (string useme) { GUI.Use(useme); }; 
         }
 
         static void ThrowError(string error){
