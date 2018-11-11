@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using TrickyUnits;
+using TrickyUnits.GTK;
 
 namespace Devlog
 {
@@ -83,6 +84,34 @@ namespace Devlog
 
     class dvProject
     {
+        string myname;
+        string myfile;
+
+        static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
+        static public dvProject Get(string prjname){
+            if (LoadedProjects.ContainsKey(prjname)) return LoadedProjects[prjname];
+            GUI.WriteLn($"Loading project: {prjname}");
+            var ret = new dvProject();
+            ret.myname = prjname;
+            ret.myfile = $"{MainClass.WorkSpace}/Projects/{ret.myname}";
+            try {
+                ret.Data = GINI.ReadFromFile($"{ret.myfile}.prj");
+            } catch {
+                GUI.WriteLn($"ERROR:\tI could not read {ret.myfile}.prj");
+                QuickGTK.Error($"!!ERROR!!\n\nI could not read {ret.myfile}.prj");
+                return null;
+            } finally {
+                GUI.WriteLn("Complete!");
+            }
+            if(ret.Data==null){
+                GUI.WriteLn($"ERROR:\tI could not read {ret.myfile}.prj");
+                QuickGTK.Error($"!!ERROR!!\n\nI could not read {ret.myfile}.prj");
+                return null;
+            }
+            LoadedProjects[prjname] = ret;
+            return ret;
+        }
+
         public TGINI Data = new TGINI();
 
         public string GitHub { get => Data.C("GITHUBREPOSITORY");  set { Data.D("GITHUBREPOSITORY", value); SaveMe(); } }

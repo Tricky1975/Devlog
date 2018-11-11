@@ -49,7 +49,8 @@ namespace Devlog
         static Entry TagEditHead;
         static Entry TagEditEntry;
         static bool AllowEdit = true;
-        static dvProject CurrentProject { get { return null; } }// Acutal return comes later!
+        static string CurrentProjectName = "";
+        static dvProject CurrentProject { get { if (CurrentProjectName=="") return null; return dvProject.Get(CurrentProjectName); } }// Acutal return comes later!
         static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
 
 
@@ -107,6 +108,8 @@ namespace Devlog
             }
         }
 
+
+
         static void InitSidebar(VBox sidebar){
             var lb = new ListBox("Projects"); ProjectList = lb;
             var sw = new ScrolledWindow();
@@ -123,6 +126,14 @@ namespace Devlog
             stream.Dispose();
             sidebar.Add(sw);
             sidebar.Add(mascot);
+            lb.Gadget.CursorChanged += delegate (object sender, EventArgs a) { Use(lb.ItemText); };
+        }
+
+        static public void Use(string prj){
+            System.Console.WriteLine($"User picked {prj}");
+            CurrentProjectName = prj;
+            UpdateTags();
+            AutoEnable();
         }
 
         static void TagsInit(VBox panel){
@@ -139,7 +150,13 @@ namespace Devlog
             TagEditBox.Add(lb2);
             TagEditBox.Add(TagEditEntry);
             panel.Add(TagEditBox);
+            RequireProject.Add(TagList.Gadget);
+        }
 
+        static public void UpdateTags(){
+            TagList.Clear();
+            if (CurrentProject == null) return;
+            foreach (string tag in CurrentProject.Data.List("Tags")) TagList.AddItem(tag);
         }
 
         public static void Init()
