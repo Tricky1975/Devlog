@@ -127,6 +127,7 @@ namespace Devlog
             sidebar.Add(sw);
             sidebar.Add(mascot);
             lb.Gadget.CursorChanged += delegate (object sender, EventArgs a) { Use(lb.ItemText); };
+            lb.Gadget.RulesHint = true;
         }
 
         static public void Use(string prj){
@@ -150,13 +151,14 @@ namespace Devlog
             TagEditBox.Add(lb2);
             TagEditBox.Add(TagEditEntry);
             panel.Add(TagEditBox);
+            TagList.Gadget.RulesHint = true;
             RequireProject.Add(TagList.Gadget);
         }
 
         static public void UpdateTags(){
             TagList.Clear();
             if (CurrentProject == null) return;
-            foreach (string tag in CurrentProject.Data.List("Tags")) TagList.AddItem(tag);
+            foreach (string tag in CurrentProject.Data.List("Tags")) TagList.AddItem(tag.Trim());
         }
 
         public static void Init()
