@@ -123,7 +123,10 @@ namespace Devlog
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
-        public void SaveMe(){} // TODO: Save me ;)
+        public void SaveMe(){
+			Console.WriteLine($"Saving: {myfile}");
+			Data.SaveSource(myfile+".prj");
+		} 
 
         public dvProject()
         {
