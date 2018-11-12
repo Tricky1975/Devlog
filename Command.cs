@@ -35,6 +35,7 @@ namespace Devlog
 
     static class CommandClass
     {
+        static dvProject CurrentProject { get { if (GUI.CurrentProjectName == "") return null; return dvProject.Get(GUI.CurrentProjectName); } }// Acutal return comes later!
         static public readonly Dictionary<string, MyCommand> Commands = new Dictionary<string, MyCommand>();
 
         static void Annoy(string arg) => QuickGTK.Info(arg); // This is just a test ;)
@@ -62,7 +63,9 @@ namespace Devlog
             Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };
             Commands["YULERIA"] = delegate { Annoy("Yuleria's rule of revenge:\nAn amateur kills people! A professional makes them suffer!"); };
             Commands["GLOBALCONFIG"] = GlobalConfig;
-            Commands["USE"] = delegate (string useme) { GUI.Use(useme); }; 
+            Commands["USE"] = delegate (string useme) { GUI.Use(useme); };
+            Commands["SYSVARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) GUI.WriteLn(v); };
+            Commands["VARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) if (qstr.Prefixed(v,"VAR.")) GUI.WriteLn(v); };
         }
 
         static void ThrowError(string error){

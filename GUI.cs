@@ -49,7 +49,7 @@ namespace Devlog
         static Entry TagEditHead;
         static Entry TagEditEntry;
         static bool AllowEdit = true;
-        static string CurrentProjectName = "";
+        static public string CurrentProjectName = "";
         static dvProject CurrentProject { get { if (CurrentProjectName=="") return null; return dvProject.Get(CurrentProjectName); } }// Acutal return comes later!
         static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
 
