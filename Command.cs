@@ -59,7 +59,7 @@ namespace Devlog
             MKL.Version("Development Log - Command.cs","18.11.12");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
-            Commands["SAY"] = GUI.WriteLn;
+			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };
             Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };
             Commands["YULERIA"] = delegate { Annoy("Yuleria's rule of revenge:\nAn amateur kills people! A professional makes them suffer!"); };
             Commands["GLOBALCONFIG"] = GlobalConfig;

@@ -236,9 +236,9 @@ namespace Devlog
 //#endif
         */
 
-        public static void Write(string yeah) {
+        public static void Write(string yeah,bool wantvars=false) {
             var result = yeah;
-            if (CurrentProject!=null) {
+            if (wantvars && CurrentProject!=null) {
 				var vs = CurrentProject.Data.Vars();
                 foreach (string clown in vs) 
                     if (qstr.Prefixed(clown, "VAR."))
@@ -255,7 +255,7 @@ namespace Devlog
             Console.Buffer.Text += result; 
         }
 
-        public static void WriteLn(string yeah) => Write($"{yeah}\n");
+        public static void WriteLn(string yeah,bool wantvars=false) => Write($"{yeah}\n",wantvars);
 
         public static VBox NewTab(string caption){
             var ret = new VBox();
