@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.10
+// Version: 18.11.12
 // EndLic
 
 using System;
@@ -37,7 +37,7 @@ namespace Devlog
         static public string WorkSpace { get => vConfig.C("WORKSPACE"); }
 
         static void InitSubClasses(){
-            MKL.Version("Development Log - Devlog.cs","18.11.10");
+            MKL.Version("Development Log - Devlog.cs","18.11.12");
             MKL.Lic    ("Development Log - Devlog.cs","GNU General Public License 3");
             CommandClass.Init();
             dvProject.Hi();
@@ -79,6 +79,15 @@ namespace Devlog
         }
 
         static public string GetConfig(string f) => vConfig.C(f);
+
+        static public string GetConfigDefault(string f,string defaultvalue, bool autosave=true){
+            var ret = vConfig.C(f);
+            if (ret=="") {
+                ret = defaultvalue;
+                if (autosave) DefConfig(f, defaultvalue);
+            }
+            return ret;
+        }
 
         public static void Main(string[] args)
         {
