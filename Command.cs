@@ -23,7 +23,7 @@
 // Version: 18.11.12
 // EndLic
 
-﻿using System;
+
 using System.Collections.Generic;
 using TrickyUnits;
 using TrickyUnits.GTK;
