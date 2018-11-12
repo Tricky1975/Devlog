@@ -239,25 +239,7 @@ namespace Devlog
         public static void Write(string yeah) {
             var result = yeah;
             if (CurrentProject!=null) {
-                var vs= 
-  at(wrapper runtime - invoke) < Module >.runtime_invoke_void__this___object_object(object, intptr, intptr, intptr)[0x0005b] in < 5049c9648f3b429a813f678f202d426a >:0
-  at<unknown> < 0xffffffff >
-  at(wrapper managed - to - native) System.Reflection.MonoMethod.InternalInvoke(System.Reflection.MonoMethod, object, object[], System.Exception &) < 0x00012 >
-	 at System.Reflection.MonoMethod.Invoke(object, System.Reflection.BindingFlags, System.Reflection.Binder, object[], System.Globalization.CultureInfo)[0x00032] in / Users / builder / jenkins / workspace / build - package - osx - mono / 2018 - 02 / external / bockbuild / builds / mono - x64 / mcs /class/corlib/System.Reflection/MonoMethod.cs:305
-  at System.Reflection.MethodBase.Invoke(object, object[]) [0x00000] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/mono-x64/mcs/class/referencesource/mscorlib/system/reflection/methodbase.cs:229
-  at System.Delegate.DynamicInvokeImpl(object[]) [0x000e1] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/mono-x64/mcs/class/corlib/System/Delegate.cs:463
-  at System.MulticastDelegate.DynamicInvokeImpl(object[]) [0x00008] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/mono-x64/mcs/class/corlib/System/MulticastDelegate.cs:67
-  at System.Delegate.DynamicInvoke(object[]) [0x00000] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/mono-x64/mcs/class/corlib/System/Delegate.cs:408
-  at GLib.Signal.ClosureInvokedCB(object, GLib.ClosureInvokedArgs) [0x0007f] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/gtk-sharp-None/glib/Signal.cs:207
-  at GLib.Signal/SignalClosure.Invoke (GLib.ClosureInvokedArgs)[0x00019] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/gtk-sharp-None/glib/SignalClosure.cs:114
-  at GLib.Signal/SignalClosure.MarshalCallback (intptr, GLib.Value*, uint, GLib.Value*, intptr, intptr)[0x00053] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/gtk-sharp-None/glib/SignalClosure.cs:143
-  at (wrapper native-to-managed) GLib.Signal/SignalClosure.MarshalCallback(intptr, GLib.Value*, uint, GLib.Value*, intptr, intptr)[0x00027] in <270e7412760746b39483cb3d37bf0e03>:0
-  at<unknown> <0xffffffff>
-  at(wrapper managed-to-native) Gtk.Application.gtk_main() <0x00012>
-  at Gtk.Application.Run() [0x00001] in /Users/builder/jenkins/workspace/build-package-osx-mono/2018-02/external/bockbuild/builds/gtk-sharp-None/gtk/Application.cs:145
-  at(wrapper runtime-invoke) <Module>.runtime_invoke_void_object(object, intptr, intptr, intptr) [0x00051] in <5049c9648f3b429a813f678f202d426a>:0
-
-
+				var vs = CurrentProject.Data.Vars();
                 foreach (string clown in vs) 
                     if (qstr.Prefixed(clown, "VAR."))
                     {
