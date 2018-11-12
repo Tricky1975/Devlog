@@ -22,7 +22,8 @@
 // 	to the project the exceptions are needed for.
 // Version: 18.11.10
 // EndLic
-﻿using System;
+
+using System;
 using TrickyUnits;
 
 
