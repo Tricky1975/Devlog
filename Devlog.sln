@@ -14,4 +14,18 @@ Global
 		{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}.Release|x86.ActiveCfg = Release|x86
 		{CA6E9A3F-488F-43DF-A924-2F56DDEE8919}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.TextStylePolicy = $2
+		$2.FileWidth = 80
+		$2.EolMarker = Unix
+		$2.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $3
+		$3.scope = text/x-csharp
+		$0.StandardHeader = $4
+		$0.VersionControlPolicy = $5
+		description = Quick Tool for Live Devlogs through a github.io site
+	EndGlobalSection
 EndGlobal
