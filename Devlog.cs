@@ -89,6 +89,9 @@ namespace Devlog
             return ret;
         }
 
+        static public int GetConfigInt(string f) => qstr.ToInt(GetConfig(f));
+        static public int GetGonfigDefaultInt(string f, int defaultvalue, bool autosave = true) => qstr.ToInt(GetConfigDefault(f, $"{defaultvalue}", autosave));
+
         public static void Main(string[] args)
         {
             InitSubClasses();
