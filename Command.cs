@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.11
+// Version: 18.11.12
 // EndLic
 
 ﻿using System;
@@ -56,7 +56,7 @@ namespace Devlog
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.11");
+            MKL.Version("Development Log - Command.cs","18.11.12");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
             Commands["SAY"] = GUI.WriteLn;
