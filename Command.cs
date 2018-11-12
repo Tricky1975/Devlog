@@ -53,6 +53,16 @@ namespace Devlog
             GUI.WriteLn($"Global Config Variable: {cfield} = {cvalue}");
         }
 
+		static void LetVar(string koe){
+			var p = koe.IndexOf('=');
+			if (p == -1) { GUI.WriteLn("Incorrect definition!"); return; }
+			var k = koe.Substring(0, p);
+			var v = koe.Substring(p+1);
+			if (CurrentProject == null) { GUI.WriteLn("No porject"); return; }
+			CurrentProject.Data.D($"VAR.{k.Trim()}", v.Trim());
+			CurrentProject.SaveMe();
+		}
+
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
@@ -66,6 +76,7 @@ namespace Devlog
             Commands["USE"] = delegate (string useme) { GUI.Use(useme); };
             Commands["SYSVARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) GUI.WriteLn(v); };
             Commands["VARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) if (qstr.Prefixed(v,"VAR.")) GUI.WriteLn(v); };
+			Commands["LET"] = LetVar;
         }
 
         static void ThrowError(string error){

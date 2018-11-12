@@ -248,7 +248,7 @@ namespace Devlog
                         do
                         {
                             oldresult = result;
-                            result = result.Replace(wvar, CurrentProject.Data.C(clown));
+							result = result.Replace($"${wvar}", CurrentProject.Data.C(clown));
                         } while (oldresult != result);
                     }
             }
