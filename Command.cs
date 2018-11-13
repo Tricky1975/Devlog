@@ -85,7 +85,7 @@ namespace Devlog
 				if (CurrentProject.GetDataDefaultInt("BCOLMAX.B", 0) > 0) BB = Rand(CurrentProject.GetDataDefaultInt("BCOLMIN.B", 6), CurrentProject.GetDataDefaultInt("BCOLMAX.B", 12));
 				CurrentProject.Data.Add("TAGS", tag);
 				CurrentProject.DefData($"HEAD.{tag}", $"background-color:rgb(0,0,0); color:rgb({FR},{FG},{FB});");
-				CurrentProject.DefData($"INHD.{tag}", $"background-color:rgb({BR},{BG},{BB}); color:rgb({FR},{FG},{FB}");
+				CurrentProject.DefData($"INHD.{tag}", $"background-color:rgb({BR},{BG},{BB}); color:rgb({FR},{FG},{FB});");
 				GUI.WriteLn($"Tag {tag} added");
 				GUI.UpdateTags();
 			}
