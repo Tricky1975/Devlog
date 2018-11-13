@@ -77,6 +77,7 @@ namespace Devlog
             // e.Changed += MyCallBack; // C# FAILED!
             return e;
         }
+
         static void GeneralInit(VBox Panel){
             Panel.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 20));
             GeneralAdd(Panel, "GITHUB", "Github Repository:").Changed += delegate (object s, EventArgs e) { if (AllowEdit) { CurrentProject.GitHub = ((Entry)s).Text; } };
@@ -87,6 +88,7 @@ namespace Devlog
         static void AutoEnable(){
             var b = CurrentProject != null;
             foreach (Widget w in RequireProject) w.Sensitive = b;
+			foreach (Widget w in RequireTag) w.Sensitive = b && TagList.ItemText != "";
         }
 
         static public void RenewProjects(){
@@ -172,6 +174,7 @@ namespace Devlog
 			TagEditHead.Text = CurrentProject.GetData($"HEAD.{tag}");
 			TagEditEntry.Text = CurrentProject.GetData($"INHD.{tag}");
 			AllowEdit = true;
+			AutoEnable();
 		}
 
 		static void OnEditTag(object sender,EventArgs a){
