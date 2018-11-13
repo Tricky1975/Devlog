@@ -128,8 +128,8 @@ namespace Devlog
 			return ret;
 		}
 
-		public int GetConfigInt(string f) => qstr.ToInt(GetData(f));
-		public int GetGonfigDefaultInt(string f, int defaultvalue, bool autosave = true) => qstr.ToInt(GetDataDefault(f, $"{defaultvalue}", autosave));
+		public int GetDataInt(string f) => qstr.ToInt(GetData(f));
+		public int GetDataDefaultInt(string f, int defaultvalue, bool autosave = true) => qstr.ToInt(GetDataDefault(f, $"{defaultvalue}", autosave));
 
 		public string GitHub { get => Data.C("GITHUBREPOSITORY");  set { Data.D("GITHUBREPOSITORY", value); SaveMe(); } }
         public string Target { get => Data.C($"TARGET.{MainClass.Platform}");  set { Data.D($"TARGET.{MainClass.Platform}",value); SaveMe(); }}
