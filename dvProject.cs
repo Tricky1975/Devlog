@@ -86,6 +86,8 @@ namespace Devlog
     {
         string myname;
         string myfile;
+		int countrecords = -1;
+		int highestrecordnumber = -1;
 
         static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
         static public dvProject Get(string prjname){
@@ -109,10 +111,32 @@ namespace Devlog
                 return null;
             }
             LoadedProjects[prjname] = ret;
+			GUI.WriteLn($"Records:        {ret.CountRecords}");
+			GUI.WriteLn($"Highest number: {ret.HighestRecordNumber}");
             return ret;
         }
 
         public TGINI Data = new TGINI();
+		public int CountRecords { get {
+				if (countrecords >= 0) return countrecords;
+				var lines = QOpen.LoadString($"{myfile}.entries").Split('\n');
+				foreach(string tline in lines){
+					var line = tline.Trim();
+					var sline = line.Split(':');
+					if (sline.Length==2 && sline[0].Trim()=="NEW"){
+						countrecords++;
+						var rn = qstr.ToInt(sline[1].Trim());
+						if (highestrecordnumber < rn) highestrecordnumber = rn;
+					}
+				}
+				return countrecords;
+			}}
+		public int HighestRecordNumber { get{
+				var i = 0;
+				if (highestrecordnumber < 0) i = CountRecords;
+				return highestrecordnumber;
+			}
+		}
 
 		public void DefData(string f, string v) {
 			Data.D(f, v);
