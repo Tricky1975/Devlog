@@ -158,7 +158,8 @@ namespace Devlog
         static public void UpdateTags(){
             TagList.Clear();
             if (CurrentProject == null) return;
-            foreach (string tag in CurrentProject.Data.List("Tags")) TagList.AddItem(tag.Trim());
+			CurrentProject.Data.List("Tags").Sort();
+			foreach (string tag in CurrentProject.Data.List("Tags")) if (tag.Trim()!="") TagList.AddItem(tag.Trim());
         }
 
         public static void Init()

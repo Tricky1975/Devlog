@@ -23,7 +23,7 @@
 // Version: 18.11.13
 // EndLic
 
-
+using System;
 using System.Collections.Generic;
 using TrickyUnits;
 using TrickyUnits.GTK;
@@ -35,7 +35,9 @@ namespace Devlog
 
     static class CommandClass
     {
-        static dvProject CurrentProject { get { if (GUI.CurrentProjectName == "") return null; return dvProject.Get(GUI.CurrentProjectName); } }// Acutal return comes later!
+		static Random myrand = new Random();
+		static int Rand(int min, int max) => myrand.Next(min, max);
+		static dvProject CurrentProject { get { if (GUI.CurrentProjectName == "") return null; return dvProject.Get(GUI.CurrentProjectName); } }// Acutal return comes later!
         static public readonly Dictionary<string, MyCommand> Commands = new Dictionary<string, MyCommand>();
 
         static void Annoy(string arg) => QuickGTK.Info(arg); // This is just a test ;)
@@ -43,6 +45,7 @@ namespace Devlog
         static public void Bye(string unneeded){
             // TODO: Some saving stuff will take place here later!
         }
+
 
         static void GlobalConfig(string cfga){
             var c = cfga.Trim();
@@ -63,6 +66,31 @@ namespace Devlog
 			CurrentProject.SaveMe();
 		}
 
+		static void NewTag(string atag){
+			CurrentProject.Data.CL("TAGS");
+			var tag = atag.Trim().ToUpper();
+			if (tag == "") { GUI.WriteLn("No Tag!"); }
+			else if (CurrentProject == null) { GUI.WriteLn("No project!"); }
+			else if (tag.IndexOf(' ') >= 0) { GUI.WriteLn("Invalid tag!"); }
+			else if (CurrentProject.Data.List("TAGS").Contains(tag)) { GUI.WriteLn($"Ttag {tag} already exists!"); }
+			else {
+				var FR = Rand(CurrentProject.GetDataDefaultInt("FCOLMIN.R", 127), CurrentProject.GetDataDefaultInt("FCOLMAX.R", 255));
+				var FG = Rand(CurrentProject.GetDataDefaultInt("FCOLMIN.G", 127), CurrentProject.GetDataDefaultInt("FCOLMAX.G", 255));
+				var FB = Rand(CurrentProject.GetDataDefaultInt("FCOLMIN.B", 127), CurrentProject.GetDataDefaultInt("FCOLMAX.B", 255));
+				var BR = (int)(FR / 20);
+				var BG = (int)(FG / 20);
+				var BB = (int)(FB / 20);
+				if (CurrentProject.GetDataDefaultInt("BCOLMAX.R", 0) > 0) BR = Rand(CurrentProject.GetDataDefaultInt("BCOLMIN.R", 6), CurrentProject.GetDataDefaultInt("BCOLMAX.R", 12));
+				if (CurrentProject.GetDataDefaultInt("BCOLMAX.G", 0) > 0) BG = Rand(CurrentProject.GetDataDefaultInt("BCOLMIN.G", 6), CurrentProject.GetDataDefaultInt("BCOLMAX.G", 12));
+				if (CurrentProject.GetDataDefaultInt("BCOLMAX.B", 0) > 0) BB = Rand(CurrentProject.GetDataDefaultInt("BCOLMIN.B", 6), CurrentProject.GetDataDefaultInt("BCOLMAX.B", 12));
+				CurrentProject.Data.Add("TAGS", tag);
+				CurrentProject.DefData($"HEAD.{tag}", $"background-color:rgb(0,0,0); color:rgb({FR},{FG},{FB});");
+				CurrentProject.DefData($"INHD.{tag}", $"background-color:rgb({BR},{BG},{BB}); color:rgb({FR},{FG},{FB}");
+				GUI.WriteLn($"Tag {tag} added");
+				GUI.UpdateTags();
+			}
+		}
+
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
@@ -77,6 +105,8 @@ namespace Devlog
             Commands["SYSVARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) GUI.WriteLn(v); };
             Commands["VARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) if (qstr.Prefixed(v,"VAR.")) GUI.WriteLn(v); };
 			Commands["LET"] = LetVar;
+			Commands["NEWTAG"] = NewTag;
+			Commands["ADDTAG"] = NewTag;
         }
 
         static void ThrowError(string error){
