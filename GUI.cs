@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.13
+// Version: 18.11.14
 // EndLic
 
 //#define KEYDEBUG // crap!
@@ -188,7 +188,7 @@ namespace Devlog
         public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
-            MKL.Version("Development Log - GUI.cs","18.11.13");
+            MKL.Version("Development Log - GUI.cs","18.11.14");
             Application.Init();
             win = new MainWindow();
             win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
@@ -199,7 +199,8 @@ namespace Devlog
             Tabber.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 20));
             Console = new TextView();
             Console.Editable = false;
-            Prompt = new Entry();
+			Console.ModifyFont(Pango.FontDescription.FromString("Courier 18"));
+			Prompt = new Entry();
             var overlord = new VBox();
             var superior = new HBox();
             var sidebar = new VBox(); sidebar.SetSizeRequest(200, 770);
