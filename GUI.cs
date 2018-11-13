@@ -153,6 +153,7 @@ namespace Devlog
             panel.Add(TagEditBox);
             TagList.Gadget.RulesHint = true;
             RequireProject.Add(TagList.Gadget);
+			TagList.Gadget.CursorChanged += OnTagSelect;
         }
 
         static public void UpdateTags(){
@@ -161,6 +162,14 @@ namespace Devlog
 			CurrentProject.Data.List("Tags").Sort();
 			foreach (string tag in CurrentProject.Data.List("Tags")) if (tag.Trim()!="") TagList.AddItem(tag.Trim());
         }
+
+		static public void OnTagSelect(object sender,EventArgs a){
+			AllowEdit = false;
+			var tag = TagList.ItemText;
+			TagEditHead.Text = CurrentProject.GetData($"HEAD.{tag}");
+			TagEditEntry.Text = CurrentProject.GetData($"INHD.{tag}");
+			AllowEdit = true;
+		}
 
         public static void Init()
         {
