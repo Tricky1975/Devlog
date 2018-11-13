@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.11
+// Version: 18.11.13
 // EndLic
 
 using System;
@@ -114,12 +114,29 @@ namespace Devlog
 
         public TGINI Data = new TGINI();
 
-        public string GitHub { get => Data.C("GITHUBREPOSITORY");  set { Data.D("GITHUBREPOSITORY", value); SaveMe(); } }
+		public void DefData(string f, string v) {
+			Data.D(f, v);
+			SaveMe();
+		}
+		public string GetData(string f) => Data.C(f);
+		public string GetDataDefault(string f, string defaultvalue, bool autosave = true) {
+			var ret = Data.C(f);
+			if (ret == "") {
+				ret = defaultvalue;
+				if (autosave) DefData(f, defaultvalue);
+			}
+			return ret;
+		}
+
+		public int GetConfigInt(string f) => qstr.ToInt(GetData(f));
+		public int GetGonfigDefaultInt(string f, int defaultvalue, bool autosave = true) => qstr.ToInt(GetDataDefault(f, $"{defaultvalue}", autosave));
+
+		public string GitHub { get => Data.C("GITHUBREPOSITORY");  set { Data.D("GITHUBREPOSITORY", value); SaveMe(); } }
         public string Target { get => Data.C($"TARGET.{MainClass.Platform}");  set { Data.D($"TARGET.{MainClass.Platform}",value); SaveMe(); }}
         public string Template { get => Data.C($"TARGET.{MainClass.Platform}"); set { Data.D($"TARGET.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","18.11.11");
+            MKL.Version("Development Log - dvProject.cs","18.11.13");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
