@@ -140,6 +140,7 @@ namespace Devlog
         static void TagsInit(VBox panel){
             TagList = new ListBox("Tags");
             TagEditBox = new HBox();
+			TagEditBox.SetSizeRequest(1000, 30);
             var sw = new ScrolledWindow(); panel.Add(sw);
             var tv = TagList.Gadget; sw.Add(tv);
             var lb1 = new Label("Head"); lb1.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
