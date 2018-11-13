@@ -154,6 +154,8 @@ namespace Devlog
             TagList.Gadget.RulesHint = true;
             RequireProject.Add(TagList.Gadget);
 			TagList.Gadget.CursorChanged += OnTagSelect;
+			TagEditHead.Changed += OnEditTag;
+			TagEditEntry.Changed += OnEditTag;
         }
 
         static public void UpdateTags(){
@@ -163,12 +165,20 @@ namespace Devlog
 			foreach (string tag in CurrentProject.Data.List("Tags")) if (tag.Trim()!="") TagList.AddItem(tag.Trim());
         }
 
-		static public void OnTagSelect(object sender,EventArgs a){
+		static void OnTagSelect(object sender,EventArgs a){
 			AllowEdit = false;
 			var tag = TagList.ItemText;
 			TagEditHead.Text = CurrentProject.GetData($"HEAD.{tag}");
 			TagEditEntry.Text = CurrentProject.GetData($"INHD.{tag}");
 			AllowEdit = true;
+		}
+
+		static void OnEditTag(object sender,EventArgs a){
+			if (!AllowEdit) return;
+			var s = (Entry)sender;
+			var h = "INHD";
+			if (s==TagEditHead) h = "HEAD";
+			CurrentProject.DefData($"{h}.{TagList.ItemText}",s.Text);
 		}
 
         public static void Init()
