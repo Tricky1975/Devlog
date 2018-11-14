@@ -34,6 +34,7 @@ namespace Devlog
 
         bool DoUpdate = true;
 		public bool Loaded = true;
+		readonly public int RecID;
 
         void ParseText(){
             // Actual parsing comes later!
@@ -63,12 +64,18 @@ namespace Devlog
         // Obtains entry from .Entries file
         public dvEntry(int id,string byProject){
             DoUpdate = false; // must be first
+			core["TAG"] = "UNKNOWN";
+			core["PURE"] = "?";
+			core["TEXT"] = "?";
+			core["DATE"] = "5000 B.C, maybe?";
+			core["TIME"] = "Mystery time!";
+			// None of the values above may ever pop up, but ya never know!
             int tid = -10;
             foreach(string fline in QOpen.LoadString($"{MainClass.WorkSpace}/Entries/{byProject}.Entries").Split('\n')){
                 var line = fline.Trim();
                 if (line != ""){
                     if (line == "PUSH"){
-                        if (tid == id) { return; }
+						if (tid == id) { RecID=id; return; }
                     } else {
                         var pos = line.IndexOf(':');
                         if (pos < 0) Console.WriteLine("WARNING! Malformed line in entry file!"); else {
@@ -83,6 +90,12 @@ namespace Devlog
         }
 
 		public dvEntry(QuickStream bt,int min, int max) {
+			core["TAG"] = "UNKNOWN";
+			core["PURE"] = "?";
+			core["TEXT"] = "?";
+			core["DATE"] = "5000 B.C, maybe?";
+			core["TIME"] = "Mystery time!";
+			// None of the values above may ever pop up, but ya never know!
 			int id = -100;
 			string line;
 			byte ch;
@@ -99,7 +112,8 @@ namespace Devlog
 				if (line!="" && sl[0].Trim().ToUpper()=="NEW") {
 					string eline;
 					if (sl.Length != 2) { Loaded = false; GUI.WriteLn("ERROR IN ENTRY IDENTIFICATION!"); return;  }
-					id = qstr.ToInt(sl[1]);
+					id = qstr.ToInt(sl[1].Trim());
+					RecID = id;
 					do {
 						eline = "";
 						while (true) {
@@ -111,17 +125,18 @@ namespace Devlog
 						eline = eline.Trim();
 						if (eline!=""){
 							if (eline!="PUSH"){
-								var pos = line.IndexOf(':');
+								var pos = eline.IndexOf(':');
 								if (pos < 0) Console.WriteLine("WARNING! Malformed line in entry file!"); else {
 									var key = eline.Substring(0, pos).ToUpper().Trim();
-									var value = eline.Substring(pos);
+									var value = eline.Substring(pos+1).Trim();
 									core[key] = value;
 								}
 							}
 						}
 					} while (eline != "PUSH");
 				}
-			} while (id >= 0 && id > min && id < max);
+			} while (id < 0 || id < min || id > max);
+
 		}
     }
 
@@ -159,6 +174,7 @@ namespace Devlog
             return ret;
         }
 
+		public string EntryFile { get { return $"{myfile}.Entries"; }}
         public TGINI Data = new TGINI();
 		public int CountRecords { get {
 				if (countrecords >= 0) return countrecords;

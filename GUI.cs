@@ -148,7 +148,9 @@ namespace Devlog
 		{
 			System.Console.WriteLine($"User picked {prj}");
 			CurrentProjectName = prj;
+			var p = CurrentProject;
 			UpdateTags();
+			UpdateEntries(p.HighestRecordNumber - 200, p.HighestRecordNumber);
 			AutoEnable();
 		}
 
@@ -227,7 +229,23 @@ namespace Devlog
 			NameCell = new CellRendererText();
 			tvc.Title = "Content:";
 			tvc.PackStart(NameCell, true);
-			tvc.AddAttribute(NameCell, "text", 1);
+			tvc.AddAttribute(NameCell, "text", 2);
+			Entries.AppendColumn(tvc);
+
+			// Date
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Date:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 3);
+			Entries.AppendColumn(tvc);
+
+			// Time
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Date:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 4);
 			Entries.AppendColumn(tvc);
 
 			// Finish
@@ -240,8 +258,16 @@ namespace Devlog
 				WriteLn("HUH? I cannot update the entries when the start value is lower than the end value");
 				return;
 			}
-			var ls = new ListStore(typeof(string), typeof(string), typeof(string));
-
+			var cp = CurrentProject; if (cp == null) return;
+			var ls = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string), typeof(string));
+			var bt = QOpen.ReadFile(cp.EntryFile);
+			while (!bt.EOF){
+				var e = new dvEntry(bt, start, einde);
+				if (e == null) break;
+				if (e.Loaded) ls.AppendValues($"{e.RecID}", e.Tag, e.Pure, e.Date, e.Time);
+			}
+			bt.Close();
+			Entries.Model = ls;
 		}
 
 		public static void Init()
