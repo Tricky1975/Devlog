@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.13
+// Version: 18.11.14
 // EndLic
 
 using System;
@@ -33,6 +33,7 @@ namespace Devlog
     class dvEntry{
 
         bool DoUpdate = true;
+		public bool Loaded = true;
 
         void ParseText(){
             // Actual parsing comes later!
@@ -80,6 +81,48 @@ namespace Devlog
             }
             DoUpdate = true;  // must be last
         }
+
+		public dvEntry(QuickStream bt,int min, int max {
+			int id = -100;
+			string line;
+			byte ch;
+			do {
+				line = "";
+				while (true) {
+					ch = bt.ReadByte();
+					if (ch == 10) break;
+					if (bt.EOF) { Loaded = false; return; }
+					line += qstr.Chr(ch);
+				}
+				line = line.Trim();
+				var sl = line.Split(':');
+				if (line!="" && sl[0].Trim().ToUpper()=="NEW") {
+					string eline;
+					if (sl.Length != 2) { Loaded = false; GUI.WriteLn("ERROR IN ENTRY IDENTIFICATION!"); return;  }
+					id = qstr.ToInt(sl[1]);
+					do {
+						eline = "";
+						while (true) {
+							ch = bt.ReadByte();
+							if (ch == 10) break;
+							if (bt.EOF) { Loaded = false; return; }
+							eline += qstr.Chr(ch);
+						}
+						eline = eline.Trim();
+						if (eline!=""){
+							if (eline!="PUSH"){
+								var pos = line.IndexOf(':');
+								if (pos < 0) Console.WriteLine("WARNING! Malformed line in entry file!"); else {
+									var key = eline.Substring(0, pos).ToUpper().Trim();
+									var value = eline.Substring(pos);
+									core[key] = value;
+								}
+							}
+						}
+					} while (eline != "PUSH");
+				}
+			} while (id >= 0 && id > min && id < max);
+		}
     }
 
     class dvProject
@@ -160,7 +203,7 @@ namespace Devlog
         public string Template { get => Data.C($"TARGET.{MainClass.Platform}"); set { Data.D($"TARGET.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","18.11.13");
+            MKL.Version("Development Log - dvProject.cs","18.11.14");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
