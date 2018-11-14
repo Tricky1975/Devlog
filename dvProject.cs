@@ -82,7 +82,7 @@ namespace Devlog
             DoUpdate = true;  // must be last
         }
 
-		public dvEntry(QuickStream bt,int min, int max {
+		public dvEntry(QuickStream bt,int min, int max) {
 			int id = -100;
 			string line;
 			byte ch;

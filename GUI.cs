@@ -52,6 +52,7 @@ namespace Devlog
 		static public string CurrentProjectName = "";
 		static dvProject CurrentProject { get { if (CurrentProjectName == "") return null; return dvProject.Get(CurrentProjectName); } }// Acutal return comes later!
 		static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
+		static TreeView Entries;
 
 
 		static Dictionary<string, Entry> GenEntries = new Dictionary<string, Entry>();
@@ -203,7 +204,47 @@ namespace Devlog
 
 		static void ConsoleDOWN(object sender, EventArgs e) { Console.ScrollToIter(Console.Buffer.EndIter, 0, false, 0, 0); }
 
-	    public static void Init()
+		static void InitEntries(VBox Panel){
+			Entries = new TreeView();
+			// record number
+			var tvc = new TreeViewColumn();
+			var NameCell = new CellRendererText();
+			tvc.Title = "Record:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 0);
+			Entries.AppendColumn(tvc);
+
+			// Tag
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Tag:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 1);
+			Entries.AppendColumn(tvc);
+
+			// Content
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Content:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 1);
+			Entries.AppendColumn(tvc);
+
+			// Finish
+			RequireProject.Add(Entries);
+			Panel.Add(Entries);
+		}
+
+		public static void UpdateEntries(int start, int einde){
+			if (start>einde) {
+				WriteLn("HUH? I cannot update the entries when the start value is lower than the end value");
+				return;
+			}
+			var ls = new ListStore(typeof(string), typeof(string), typeof(string));
+
+		}
+
+		public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
             MKL.Version("Development Log - GUI.cs","18.11.14");
@@ -245,7 +286,7 @@ namespace Devlog
             mainarea.Add(Tabber);
             GeneralInit(NewTab("General"));
             TagsInit(NewTab("Tags"));
-            NewTab("Entries");
+			InitEntries(NewTab("Entries"));
             NewTab("AutoPrefix");
             WriteLn("Welcome to Devlog!");
             WriteLn("Coded by: Tricky");
