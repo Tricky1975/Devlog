@@ -218,6 +218,7 @@ namespace Devlog
 		static void InitEntries(VBox Panel){
 			var sentries = new ScrolledWindow();
 			Entries = new TreeView();
+			Entries.RulesHint = true;
 			sentries.Add(Entries);
 			// record number
 			var tvc = new TreeViewColumn();
