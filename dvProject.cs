@@ -84,6 +84,7 @@ namespace Devlog
 			DoUpdate = false; // must be first
             Tag = atag;
             Pure = apure;
+			core["TEXT"] = apure; // TODO: REMOVE THIS LINE ONCE ACTUAL TEXT PARSING'S DONE!!!!
 			var now = DateTime.Now;
 			string[] months = { "?", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 			core["DATE"] = $"{now.Day} {months[now.Month]} {now.Year}";
