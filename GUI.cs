@@ -260,13 +260,14 @@ namespace Devlog
 			}
 			var cp = CurrentProject; if (cp == null) return;
 			var ls = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string), typeof(string));
-			var bt = QOpen.ReadFile(cp.EntryFile);
-			while (!bt.EOF){
-				var e = new dvEntry(bt, start, einde);
+			//var bt = QOpen.ReadFile(cp.EntryFile);
+			//while (!bt.EOF){
+			for (int i = start; i <= einde;i++){
+				var e = new dvEntry(cp, i); //(bt, start, einde);
 				if (e == null) break;
 				if (e.Loaded) ls.AppendValues($"{e.RecID}", e.Tag, e.Pure, e.Date, e.Time);
 			}
-			bt.Close();
+			//bt.Close();
 			Entries.Model = ls;
 		}
 

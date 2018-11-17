@@ -30,6 +30,12 @@ using TrickyUnits.GTK;
 
 namespace Devlog
 {
+	class dvIndex{
+		public int id;
+		public long size;
+		public long offset;
+	}
+
     class dvEntry{
 
         bool DoUpdate = true;
@@ -89,13 +95,16 @@ namespace Devlog
             DoUpdate = true;  // must be last
         }
 
-		public dvEntry(QuickStream bt,int min, int max) {
+		public dvEntry(object aprj, int want) { //}, int max) {
+			var prj = (dvProject)aprj;
 			core["TAG"] = "UNKNOWN";
 			core["PURE"] = "?";
 			core["TEXT"] = "?";
 			core["DATE"] = "5000 B.C, maybe?";
 			core["TIME"] = "Mystery time!";
+			Loaded = false;
 			// None of the values above may ever pop up, but ya never know!
+			/* old code 
 			int id = -100;
 			string line;
 			byte ch;
@@ -137,15 +146,45 @@ namespace Devlog
 				}
 			} while (id < 0 || id < min || id > max);
 
+		} */
+			if (want < 0) return;  // Ignore stuff that is too low
+								   //var bix = QOpen.ReadFile($"{prj}.Index");
+			var bcn = QOpen.ReadFile($"{prj.PrjFile}.Content");
+			byte tag = 0;
+			if (!prj.Indexes.ContainsKey(want)) { GUI.WriteLn($"ERROR! Index {want} not found!"); goto closure; }
+			var Index = prj.Indexes[want];
+			int id = Index.id; //-100;
+			long size = Index.size;
+			long offset = Index.offset;
+			long einde = offset + size;
+			bcn.Position = offset;
+			while (bcn.Position < einde) {
+				if (bcn.Position > einde) { GUI.WriteLn("ERROR! Index read pointer exceeds ending point!"); goto closure; }
+				tag = bcn.ReadByte();
+				if (tag != 0) { GUI.WriteLn($"ERRROR! Unknown content command tag {tag}"); goto closure; }
+				var key = bcn.ReadString();
+				var value = bcn.ReadString();
+#if DEBUG
+				Console.WriteLine($"{key} = \"{value}\"");
+#endif
+				core[key.ToUpper()] = value;
+			}
+			Loaded = true;
+		closure:
+			//bix.Close();
+			bcn.Close();
 		}
     }
 
     class dvProject
     {
-        string myname;
-        string myfile;
-		int countrecords = -1;
-		int highestrecordnumber = -1;
+		public Dictionary<int, dvIndex> Indexes = new Dictionary<int, dvIndex>();
+		string myname;
+		string myfile;
+		//int countrecords = -1;
+		//int highestrecordnumber = -1;
+
+			public string PrjFile { get { return myfile; }}
 
         static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
         static public dvProject Get(string prjname){
@@ -168,15 +207,35 @@ namespace Devlog
                 QuickGTK.Error($"!!ERROR!!\n\nI could not read {ret.myfile}.prj");
                 return null;
             }
-            LoadedProjects[prjname] = ret;
+			// Load Indexes
+			var bix = QOpen.ReadFile($"{ret.myfile}.Index");
+			byte tag;
+			dvIndex Index;
+			GUI.WriteLn($"Loading indexes for project: {prjname}");
+			while (!bix.EOF) {
+				//if (bix.EOF) { Console.WriteLine($"ERROR! Record {want} not found"); goto closure; } // I hate the "goto" command but in this particular case it's the safest way to go! (No I do miss the "defer" keyword Go has!)
+				tag = bix.ReadByte();
+				if (tag != 0) { GUI.WriteLn($"ERROR! Unknown index command tag {tag}!"); ret=null; goto closure; }
+				Index = new dvIndex();
+				Index.id = bix.ReadInt();
+				Index.size = bix.ReadLong();
+				Index.offset = bix.ReadLong();
+				if (ret.Indexes.ContainsKey(Index.id)) GUI.WriteLn($"WARNING!!! Duplicate index #{Index.id}. One of them will overwrite another");
+				ret.Indexes[Index.id] = Index;
+				//einde = offset + size;
+			} //while (id != want);//(id < 0 || id < min || id > max);
+			LoadedProjects[prjname] = ret;
 			GUI.WriteLn($"Records:        {ret.CountRecords}");
 			GUI.WriteLn($"Highest number: {ret.HighestRecordNumber}");
-            return ret;
+		closure:
+			bix.Close();
+			return ret;
         }
 
 		public string EntryFile { get { return $"{myfile}.Entries"; }}
         public TGINI Data = new TGINI();
 		public int CountRecords { get {
+				/* old
 				if (countrecords >= 0) return countrecords;
 				var lines = QOpen.LoadString($"{myfile}.entries").Split('\n');
 				foreach(string tline in lines){
@@ -189,11 +248,17 @@ namespace Devlog
 					}
 				}
 				return countrecords;
+				*/
+				return Indexes.Count;
 			}}
 		public int HighestRecordNumber { get{
-				var i = 0;
+				var hi = 0;
+				/*
 				if (highestrecordnumber < 0) i = CountRecords;
 				return highestrecordnumber;
+				*/
+				foreach (dvIndex i in Indexes.Values) if (hi < i.id) hi = i.id;
+				return hi;
 			}
 		}
 
