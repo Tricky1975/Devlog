@@ -34,6 +34,7 @@ namespace Devlog
 		public int id;
 		public long size;
 		public long offset;
+
 	}
 
     class dvEntry{

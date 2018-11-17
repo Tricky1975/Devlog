@@ -207,7 +207,9 @@ namespace Devlog
 		static void ConsoleDOWN(object sender, EventArgs e) { Console.ScrollToIter(Console.Buffer.EndIter, 0, false, 0, 0); }
 
 		static void InitEntries(VBox Panel){
+			var sentries = new ScrolledWindow();
 			Entries = new TreeView();
+			sentries.Add(Entries);
 			// record number
 			var tvc = new TreeViewColumn();
 			var NameCell = new CellRendererText();
@@ -243,14 +245,15 @@ namespace Devlog
 			// Time
 			tvc = new TreeViewColumn();
 			NameCell = new CellRendererText();
-			tvc.Title = "Date:";
+			tvc.Title = "Time:";
 			tvc.PackStart(NameCell, true);
 			tvc.AddAttribute(NameCell, "text", 4);
 			Entries.AppendColumn(tvc);
 
 			// Finish
 			RequireProject.Add(Entries);
-			Panel.Add(Entries);
+			Panel.Add(sentries);
+
 		}
 
 		public static void UpdateEntries(int start, int einde){
