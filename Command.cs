@@ -87,8 +87,21 @@ namespace Devlog
 				CurrentProject.DefData($"HEAD.{tag}", $"background-color:rgb(0,0,0); color:rgb({FR},{FG},{FB});");
 				CurrentProject.DefData($"INHD.{tag}", $"background-color:rgb({BR},{BG},{BB}); color:rgb({FR},{FG},{FB});");
 				GUI.WriteLn($"Tag {tag} added");
+				AddEntry($"SITE Added tag {tag}");
 				GUI.UpdateTags();
 			}
+		}
+
+		static void AddEntry(string junk){
+			var p = junk.IndexOf(' '); if (p < 0) { GUI.WriteLn("ADD: Syntax error!"); return; }
+			var tag = junk.Substring(0, p).ToUpper().Trim();
+			var content = junk.Substring(p+1).Trim();
+			var cp = CurrentProject;
+			if (cp == null) { GUI.WriteLn("ADD: No project!"); return; }
+			var e = new dvEntry(cp, tag, content);
+			GUI.WriteLn($"Added entry #{e.RecID}");
+			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);
+			// TODO: Auto push at certain number of additions!
 		}
 
         static public void Init()
@@ -107,6 +120,7 @@ namespace Devlog
 			Commands["LET"] = LetVar;
 			Commands["NEWTAG"] = NewTag;
 			Commands["ADDTAG"] = NewTag;
+			Commands["ADD"] = AddEntry;
         }
 
         static void ThrowError(string error){

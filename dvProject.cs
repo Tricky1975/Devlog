@@ -42,6 +42,7 @@ namespace Devlog
         bool DoUpdate = true;
 		public bool Loaded = true;
 		readonly public int RecID;
+		readonly dvProject project;
 
         void ParseText(){
             // Actual parsing comes later!
@@ -49,7 +50,22 @@ namespace Devlog
 
         void UpdateMe(){
             if (!DoUpdate) return;
-            // TODO: Actual updating
+			var newindex = new dvIndex();
+			newindex.id = RecID;
+			var bt = new QuickStream(System.IO.File.OpenWrite($"{project.PrjFile}.Content")); // Does this append?
+			var start = bt.Size;
+			bt.Position = bt.Size;
+			foreach(string k in core.Keys) {
+				bt.WriteByte(0);
+				bt.WriteString(k);
+				bt.WriteString(core[k]);
+			}
+			var einde = bt.Position;
+			bt.Close();
+			newindex.size = einde - start;
+			newindex.offset = start;
+			project.Indexes[RecID] = newindex;
+			project.SaveIndexes();
         }
 
         public readonly Dictionary<string, string> core = new Dictionary<string, string>();
@@ -61,13 +77,23 @@ namespace Devlog
         public string Modified { get { if (core.ContainsKey("MODIFIED")) return core["MODIFIED"]; return ""; } set { if (!core.ContainsKey("MODIFIED")) core["MODIFIED"] = value; else core["MODIFIED"] += $"; {value}"; } }
 
         // Creates new entry
-        public dvEntry(string atag,string apure, string byProject){
-            DoUpdate = false; // must be first
+        public dvEntry(object aprj, string atag,string apure){
+			// TODO: Pure => text parsing!
+			var prj = (dvProject)aprj;
+			project = prj;
+			DoUpdate = false; // must be first
             Tag = atag;
             Pure = apure;
+			var now = DateTime.Now;
+			string[] months = { "?", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+			core["DATE"] = $"{now.Day} {months[now.Month]} {now.Year}";
+			core["TIME"] = $"{now.Hour}:{qstr.Right($"0{now.Minute}", 2)}";
+			RecID = prj.HighestRecordNumber + 1;
             DoUpdate = true;  // must be last
+			UpdateMe();
         }
 
+		/* NO!
         // Obtains entry from .Entries file
         public dvEntry(int id,string byProject){
             DoUpdate = false; // must be first
@@ -95,9 +121,12 @@ namespace Devlog
             }
             DoUpdate = true;  // must be last
         }
+		*/
 
 		public dvEntry(object aprj, int want) { //}, int max) {
 			var prj = (dvProject)aprj;
+			RecID = want;
+			project = prj;
 			core["TAG"] = "UNKNOWN";
 			core["PURE"] = "?";
 			core["TEXT"] = "?";
@@ -185,7 +214,7 @@ namespace Devlog
 		//int countrecords = -1;
 		//int highestrecordnumber = -1;
 
-			public string PrjFile { get { return myfile; }}
+		public string PrjFile { get { return myfile; }}
 
         static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
         static public dvProject Get(string prjname){
@@ -232,6 +261,17 @@ namespace Devlog
 			bix.Close();
 			return ret;
         }
+
+		public void SaveIndexes(){
+			var bix = QOpen.WriteFile($"{myfile}.Index");
+			foreach(dvIndex idx in Indexes.Values){
+				bix.WriteByte(0);
+				bix.WriteInt(idx.id);
+				bix.WriteLong(idx.size);
+				bix.WriteLong(idx.offset);
+			}
+			bix.Close();
+		}
 
 		public string EntryFile { get { return $"{myfile}.Entries"; }}
         public TGINI Data = new TGINI();
