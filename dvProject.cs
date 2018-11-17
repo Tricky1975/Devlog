@@ -325,9 +325,9 @@ namespace Devlog
 		public int GetDataInt(string f) => qstr.ToInt(GetData(f));
 		public int GetDataDefaultInt(string f, int defaultvalue, bool autosave = true) => qstr.ToInt(GetDataDefault(f, $"{defaultvalue}", autosave));
 
-		public string GitHub { get => Data.C("GITHUBREPOSITORY");  set { Data.D("GITHUBREPOSITORY", value); SaveMe(); } }
-        public string Target { get => Data.C($"TARGET.{MainClass.Platform}");  set { Data.D($"TARGET.{MainClass.Platform}",value); SaveMe(); }}
-        public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}"); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
+		public string GitHub { get => Data.C("GITHUBREPOSITORY").Trim();  set { Data.D("GITHUBREPOSITORY", value); SaveMe(); } }
+        public string Target { get => Data.C($"TARGET.{MainClass.Platform}").Trim();  set { Data.D($"TARGET.{MainClass.Platform}",value); SaveMe(); }}
+        public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
             MKL.Version("Development Log - dvProject.cs","18.11.17");

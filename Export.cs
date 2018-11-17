@@ -23,7 +23,7 @@
 // Version: 18.11.17
 // EndLic
 
-#define TempOutput
+#undef TempOutput
 
 
 using System;
@@ -37,7 +37,7 @@ namespace Devlog
 #if TempOutput
 		const string OutDir = "/Users/Rachel/Projects/VisualStudio/DevLog/MKL_TempExport";
 #else
-		string OutDir { get { return CurrentProject.Target; } }
+		static string OutDir { get { return CurrentProject.Target.Trim(); } }
 #endif
 
 
@@ -56,9 +56,10 @@ namespace Devlog
 			int pcountdown = 200;
 			bool justnewpaged = false;
 			string olddate = "____OLD____";
+			string[] iconext = { "png", "gif", "svg", "jpg" };
 			if (cp.CountRecords % 200 > 0) pages++;
 			try{
-				template = QOpen.LoadString(cp.Template);
+				template = QOpen.LoadString(cp.Template.Trim());
 			} catch {
 				QuickGTK.Error($"Template {cp.Template} could not be properly loaded!");
 				GUI.WriteLn($"GEN:Template {cp.Template} could not be properly loaded!");
@@ -79,8 +80,14 @@ namespace Devlog
 				if (rec.Date != olddate) content += $"<tr><td align=center colspan=3 style='font-size:30pt;'>- = {rec.Date} = -</td></tr>\n"; olddate = rec.Date;
 				string headstyle = cp.Data.C($"HEAD.{rec.Tag.ToUpper()}");
 				string contentstyle = cp.Data.C($"INHD.{rec.Tag.ToUpper()}");
-				content += $"<tr valign=top><td align=left><a id='dvRec_{rec.RecID}'></a>{rec.Time}</td><td style=\"{headstyle}\">{rec.Tag}</td><td style='width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; {contentstyle}'><div style=\"width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; overflow-x:auto;\">";     
-				// TODO: Icon addition
+				content += $"<tr valign=top><td align=left><a id='dvRec_{rec.RecID}'></a>{rec.Time}</td><td style=\"{headstyle}\">{rec.Tag}</td><td style='width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; {contentstyle}'><div style=\"width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; overflow-x:auto;\">";
+				var icon = $"{OutDir}/Icons/{rec.Tag.ToLower()}";
+				icon = icon.Replace("#", "hashtag");
+				foreach(string pfmt in iconext) {
+					var iconfile = $"{icon}.{pfmt}";
+					iconfile = iconfile.Replace("#", "%23");
+					if (System.IO.File.Exists(iconfile)) { content += $"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")}; height:{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)}' src='{iconfile}' alt='{rec.Tag}'>"; break; }
+				}
 				content += $"{rec.Text}</div></td></tr>\n";
 				pcountdown--;
 				if (pcountdown<=0){
