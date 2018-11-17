@@ -305,6 +305,7 @@ namespace Devlog
             var pOk = new Button("Ok");
             pOk.SetSizeRequest(50, 30);
             pOk.Clicked += AndACTION;
+			Prompt.Activated += AndACTION;
             Prompt.SetSizeRequest(1150, 30);
             promptbar.Add(pOk);
             Console.ModifyBase(StateType.Normal, new Gdk.Color(0, 20, 0));
