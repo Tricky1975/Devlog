@@ -265,7 +265,7 @@ namespace Devlog
 			for (int i = start; i <= einde;i++){
 				var e = new dvEntry(cp, i); //(bt, start, einde);
 				if (e == null) break;
-				if (e.Loaded) ls.AppendValues($"{e.RecID}", e.Tag, e.Pure, e.Date, e.Time);
+				if (e.Loaded) ls.AppendValues($"{i}", e.Tag, e.Pure, e.Date, e.Time);
 			}
 			//bt.Close();
 			Entries.Model = ls;
