@@ -103,6 +103,17 @@ namespace Devlog
 			GUI.WriteLn($"Added entry #{e.RecID}");
 			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);
 			// TODO: Auto push at certain number of additions!
+			cp.autopush--;
+			if (cp.autopush<0){
+				DoCommand("GEN");
+				DoCommand("PUSH");
+				cp.autopush = 10;
+			} else if (cp.autopush==0) {
+				GUI.WriteLn("Next addition will trigger the autopush");
+			} else {
+				GUI.WriteLn($"Auto-Push after {cp.autopush} more addtions");
+			}
+			// TODO: Auto prefix
 		}
 
         static public void Init()
