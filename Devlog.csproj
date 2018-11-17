@@ -89,6 +89,7 @@
     <Compile Include="..\TrickyUnits\FileList.cs">
       <Link>Dependencies\TrickyUnits\FileList.cs</Link>
     </Compile>
+    <Compile Include="Export.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />

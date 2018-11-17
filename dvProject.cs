@@ -217,6 +217,7 @@ namespace Devlog
 		//int highestrecordnumber = -1;
 
 		public string PrjFile { get { return myfile; }}
+		public string PrjName { get { return myname; }}
 
         static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
         static public dvProject Get(string prjname){

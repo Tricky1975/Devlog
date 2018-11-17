@@ -41,6 +41,7 @@ namespace Devlog
             MKL.Lic    ("Development Log - Devlog.cs","GNU General Public License 3");
             CommandClass.Init();
             dvProject.Hi();
+			Export.Hello();
 			TrickyUnits.GTK.ListBox.Hello();
         }
 

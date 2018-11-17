@@ -122,6 +122,10 @@ namespace Devlog
 			Commands["NEWTAG"] = NewTag;
 			Commands["ADDTAG"] = NewTag;
 			Commands["ADD"] = AddEntry;
+			Commands["GEN"] = delegate { Export.Gen(); };
+			Commands["ABOUT"] = delegate { 
+				GUI.WriteLn($"This tool has been created and copyrighted by Jeroen P. Broks\nIs has been released under the terms of the GPL version 3\n\nCompiled on the next source files:\n\n{MKL.All()}"); 
+			};
         }
 
         static void ThrowError(string error){
