@@ -98,6 +98,7 @@ namespace Devlog
 			var content = junk.Substring(p+1).Trim();
 			var cp = CurrentProject;
 			if (cp == null) { GUI.WriteLn("ADD: No project!"); return; }
+			if (!cp.GotTag(tag)) { GUI.WriteLn($"ADD: Tag {tag} does not exist!"); return; }
 			var e = new dvEntry(cp, tag, content);
 			GUI.WriteLn($"Added entry #{e.RecID}");
 			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);

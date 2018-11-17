@@ -209,6 +209,7 @@ namespace Devlog
     class dvProject
     {
 		public Dictionary<int, dvIndex> Indexes = new Dictionary<int, dvIndex>();
+		public int autopush = 10;
 		string myname;
 		string myfile;
 		//int countrecords = -1;
@@ -272,6 +273,8 @@ namespace Devlog
 			}
 			bix.Close();
 		}
+
+		public bool GotTag(string tag) => Data.List("TAGS").Contains(tag.Trim().ToUpper());
 
 		public string EntryFile { get { return $"{myfile}.Entries"; }}
         public TGINI Data = new TGINI();
