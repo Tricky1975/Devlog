@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.14
+// Version: 18.11.17
 // EndLic
 
 //#define KEYDEBUG // crap!
@@ -274,7 +274,7 @@ namespace Devlog
 		public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
-            MKL.Version("Development Log - GUI.cs","18.11.14");
+            MKL.Version("Development Log - GUI.cs","18.11.17");
             Application.Init();
             win = new MainWindow();
             win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
