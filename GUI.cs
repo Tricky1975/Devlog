@@ -89,6 +89,14 @@ namespace Devlog
 			GeneralAdd(Panel, "TEMPLATE", "Template file:").Changed += delegate (object s, EventArgs e) { if (AllowEdit) { CurrentProject.Template = ((Entry)s).Text; } };
 		}
 
+		static void GeneralUpdate(){
+			AllowEdit = false;
+			GenEntries["GITHUB"].Text = CurrentProject.GitHub;
+			GenEntries["TARGET"].Text = CurrentProject.Target;
+			GenEntries["TEMPLATE"].Text = CurrentProject.Template;
+			AllowEdit = true;
+		}
+
 		static void AutoEnable()
 		{
 			var b = CurrentProject != null;
@@ -149,6 +157,7 @@ namespace Devlog
 			System.Console.WriteLine($"User picked {prj}");
 			CurrentProjectName = prj;
 			var p = CurrentProject;
+			GeneralUpdate();
 			UpdateTags();
 			UpdateEntries(p.HighestRecordNumber - 200, p.HighestRecordNumber);
 			AutoEnable();
