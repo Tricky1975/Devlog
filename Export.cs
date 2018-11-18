@@ -48,9 +48,9 @@ namespace Devlog
 
 
 		static public void Gen(){
-			System.IO.Directory.CreateDirectory(OutDir);
 			string template;
 			var cp = CurrentProject; if (cp == null) { GUI.WriteLn("GEN: No project!"); return; }
+			System.IO.Directory.CreateDirectory(OutDir);
 			int pages = cp.CountRecords / 200;
 			int page = 1;
 			int pcountdown = 200;
