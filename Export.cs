@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.17
+// Version: 18.11.18
 // EndLic
 
 #undef TempOutput
@@ -42,7 +42,7 @@ namespace Devlog
 
 
 		static public void Hello(){
-			MKL.Version("Development Log - Export.cs","18.11.17");
+			MKL.Version("Development Log - Export.cs","18.11.18");
 			MKL.Lic    ("Development Log - Export.cs","GNU General Public License 3");
 		}
 
@@ -68,7 +68,7 @@ namespace Devlog
 			GUI.Write("Exporting...");
 			var pageline = "";
 			for (int p = 1; p <= pages; p++) {
-				if (page == p) pageline += $"<big><big>{p}</big><big> "; else pageline += $"<a href='{cp.PrjName}_DevLog_Page_{p}.html'>{p}</a> ";
+				if (page == p) pageline += $"<big><big>{p}</big></big> "; else pageline += $"<a href='{cp.PrjName}_DevLog_Page_{p}.html'>{p}</a> ";
 			}
 			pageline = pageline.Trim();
 			var content = $"<table style=\"width:{cp.GetDataDefaultInt("EXPORT.TABLEWIDTH", 1200)}\">\n";
@@ -98,7 +98,7 @@ namespace Devlog
 					page++;
 					pageline = "";
 					for (int p = 1; p <= pages; p++) {
-						if (page == p) pageline += $"<big><big>{p}</big><big> "; else pageline += $"<a href='{cp.PrjName}_DevLog_Page_{p}.html'>{p}</a> ";
+						if (page == p) pageline += $"<big><big>{p}</big></big> "; else pageline += $"<a href='{cp.PrjName}_DevLog_Page_{p}.html'>{p}</a> ";
 					}
 					content = $"<table style=\"width:{cp.GetDataDefaultInt("EXPORT.TABLEWIDTH", 1200)}\">\n";
 					content += $"<tr><td colspan=3 align=center>{pageline}</td></tr>\n";
