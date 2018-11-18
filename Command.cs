@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.17
+// Version: 18.11.18
 // EndLic
 
 using System;
@@ -118,7 +118,7 @@ namespace Devlog
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.17");
+            MKL.Version("Development Log - Command.cs","18.11.18");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
 			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };
@@ -136,6 +136,7 @@ namespace Devlog
 			Commands["ABOUT"] = delegate { 
 				GUI.WriteLn($"This tool has been created and copyrighted by Jeroen P. Broks\nIs has been released under the terms of the GPL version 3\n\nCompiled on the next source files:\n\n{MKL.All()}"); 
 			};
+			Commands["CLS"] = delegate { GUI.ClearConsole(); };
         }
 
         static void ThrowError(string error){
