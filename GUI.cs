@@ -27,8 +27,6 @@
 
 
 
-/// ZIGGO INTERNET NEVER NO MORE!
-
 using System;
 using System.Reflection;
 using System.Collections.Generic;
@@ -57,12 +55,14 @@ namespace Devlog
 		static dvProject CurrentProject { get { if (CurrentProjectName == "") return null; return dvProject.Get(CurrentProjectName); } }// Acutal return comes later!
 		static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
 		static TreeView Entries;
+		static ListBox CommandHistory;
 
 
 		static Dictionary<string, Entry> GenEntries = new Dictionary<string, Entry>();
 
 		static void AndACTION(object sender, EventArgs a)
 		{
+			CommandHistory.AddItem(Prompt.Text);
 			CommandClass.DoCommand(Prompt.Text);
 			Prompt.Text = "";
 		}
@@ -290,6 +290,13 @@ namespace Devlog
 
 		public static void ClearConsole() { Console.Buffer.Text = ""; }
 
+		static void InitHistory(VBox panel){
+			var scroll = new ScrolledWindow(); panel.Add(scroll);
+			CommandHistory = new ListBox("Command history");
+			scroll.Add(CommandHistory.Gadget);
+			CommandHistory.Gadget.CursorChanged += delegate (object sender, EventArgs e) { Prompt.Text = CommandHistory.ItemText; };
+		}
+
 		public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
@@ -335,7 +342,7 @@ namespace Devlog
             TagsInit(NewTab("Tags"));
 			InitEntries(NewTab("Entries"));
             NewTab("AutoPrefix");
-			NewTab("Command History");
+			InitHistory(NewTab("Command History"));
             WriteLn("Welcome to Devlog!");
             WriteLn("Coded by: Tricky");
             WriteLn($"(c) 2016-20{qstr.Left(MKL.Newest,2)} Jeroen P. Broks");
