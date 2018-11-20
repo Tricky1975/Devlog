@@ -287,7 +287,7 @@ namespace Devlog
 						GUI.WriteLn("Invalid Prefix definition!");
 					} else {
 						var key = line.Substring(0, p).Trim().ToUpper();
-						var value = line.Substring(p).Trim();
+						var value = line.Substring(p+1).Trim();
 						if (key=="NEW") {
 							pref = new dvPrefix();
 							ret.Prefixes[value] = pref;
