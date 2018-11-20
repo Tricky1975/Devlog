@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.18
+// Version: 18.11.20
 // EndLic
 
 #undef TempOutput
@@ -42,7 +42,7 @@ namespace Devlog
 
 
 		static public void Hello(){
-			MKL.Version("Development Log - Export.cs","18.11.18");
+			MKL.Version("Development Log - Export.cs","18.11.20");
 			MKL.Lic    ("Development Log - Export.cs","GNU General Public License 3");
 		}
 
