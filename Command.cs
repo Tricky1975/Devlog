@@ -102,6 +102,7 @@ namespace Devlog
 			var e = new dvEntry(cp, tag, content);
 			GUI.WriteLn($"Added entry #{e.RecID}");
 			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);
+			// Autopush
 			cp.autopush--;
 			if (cp.autopush<0){
 				DoCommand("GEN");
