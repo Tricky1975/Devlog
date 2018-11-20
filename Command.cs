@@ -103,6 +103,7 @@ namespace Devlog
 			foreach (string id in cp.Prefixes.Keys) {
 				var pf = cp.Prefixes[id];
 				pf.CD--;
+				GUI.WriteLn($"Prefix {id} CD at: {pf.CD}/{pf.Reset}");
 				if (pf.CD <= 0) { content = $"{pf.Prefix} {content}"; pf.CD += Math.Abs(pf.Reset); }
 			}
 			var e = new dvEntry(cp, tag, content);

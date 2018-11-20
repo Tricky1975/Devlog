@@ -278,9 +278,9 @@ namespace Devlog
 			GUI.WriteLn($"Records:        {ret.CountRecords}");
 			GUI.WriteLn($"Highest number: {ret.HighestRecordNumber}");
 			ret.Data.CL("CDPREFIX");
+			dvPrefix pref = null;
 			foreach (string iline in ret.Data.List("CDPREFIX")){
 				var line = iline.Trim();
-				dvPrefix pref=null;
 				if (line!=""){
 					var p = line.IndexOf(':');
 					if (p<0) {
@@ -291,7 +291,7 @@ namespace Devlog
 						if (key=="NEW") {
 							pref = new dvPrefix();
 							ret.Prefixes[value] = pref;
-							GUI.WriteLn($"Prefix added:   {key}");
+							GUI.WriteLn($"Prefix added:   {value}");
 						} else if (pref==null){
 							GUI.WriteLn("Definition without prefix! Please check your prefix settings!");
 						} else {
