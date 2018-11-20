@@ -103,18 +103,20 @@ namespace Devlog
 			foreach (string id in cp.Prefixes.Keys) {
 				var pf = cp.Prefixes[id];
 				pf.CD--;
-				GUI.WriteLn($"Prefix {id} CD at: {pf.CD}/{pf.Reset}");
-				if (pf.CD <= 0) { content = $"{pf.Prefix} {content}"; pf.CD += Math.Abs(pf.Reset); }
+				//GUI.WriteLn($"Prefix {id} CD at: {pf.CD}/{pf.Reset}");
+				if (pf.CD <= 0) { content = $"{pf.Prefix} {content}"; pf.CD += Math.Abs(pf.Reset); cp.SaveMe(); }
 			}
 			var e = new dvEntry(cp, tag, content);
 			GUI.WriteLn($"Added entry #{e.RecID}");
 			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);
+			GUI.UpdatePrefix();
 			// Autopush
 			cp.autopush--;
 			if (cp.autopush<0){
 				DoCommand("GEN");
 				DoCommand("PUSH");
 				cp.autopush = 10;
+				cp.SaveMe();
 			} else if (cp.autopush==0) {
 				GUI.WriteLn("Next addition will trigger the autopush");
 			} else {

@@ -56,6 +56,7 @@ namespace Devlog
 		static Gdk.Color EntryLabel = new Gdk.Color(0, 180, 255);
 		static TreeView Entries;
 		static ListBox CommandHistory;
+		static TreeView PrefixTable;
 
 
 		static Dictionary<string, Entry> GenEntries = new Dictionary<string, Entry>();
@@ -164,6 +165,7 @@ namespace Devlog
 			GeneralUpdate();
 			UpdateTags();
 			UpdateEntries(p.HighestRecordNumber - 200, p.HighestRecordNumber);
+			UpdatePrefix();
 			AutoEnable();
 		}
 
@@ -218,6 +220,57 @@ namespace Devlog
 		}
 
 		static void ConsoleDOWN(object sender, EventArgs e) { Console.ScrollToIter(Console.Buffer.EndIter, 0, false, 0, 0); }
+
+		static void InitPrefix(VBox Panel){
+			var sw = new ScrolledWindow();
+			PrefixTable = new TreeView();
+			var pt = PrefixTable; // I AM LAZY!!!
+
+			// Alert (will contain a "!" if the CD is higher than the Reset value)
+			var tvc = new TreeViewColumn();
+			var NameCell = new CellRendererText();
+			tvc.Title = "";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 0);
+			pt.AppendColumn(tvc);
+
+			// Name
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Name:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 1);
+			pt.AppendColumn(tvc);
+
+			// CD
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Countdown:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 2);
+			pt.AppendColumn(tvc);
+
+			// Reset
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Reset:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 3);
+			pt.AppendColumn(tvc);
+
+			// Prefix
+			tvc = new TreeViewColumn();
+			NameCell = new CellRendererText();
+			tvc.Title = "Prefix:";
+			tvc.PackStart(NameCell, true);
+			tvc.AddAttribute(NameCell, "text", 4);
+			pt.AppendColumn(tvc);
+
+			// Closure
+			RequireProject.Add(pt);
+			sw.Add(pt);
+			Panel.Add(sw);
+		}
 
 		static void InitEntries(VBox Panel){
 			var sentries = new ScrolledWindow();
@@ -288,6 +341,17 @@ namespace Devlog
 			Entries.Model = ls;
 		}
 
+		public static void UpdatePrefix(){
+			var cp = CurrentProject; if (cp == null) return;
+			var ls = new ListStore(/*alert*/typeof(string),/*key*/typeof(string),/*CD*/typeof(string),/*Reset*/typeof(string),/*Prefix*/typeof(string));
+			foreach(string key in cp.Prefixes.Keys){
+				var PF = cp.Prefixes[key];
+				var alert = ""; if (PF.CD > PF.Reset) alert = "!";
+				ls.AppendValues(alert, key, $"{PF.CD}", $"{PF.Reset}", $"{PF.Prefix}");
+			}
+			PrefixTable.Model = ls;
+		}
+
 		public static void ClearConsole() { Console.Buffer.Text = ""; }
 
 		static void InitHistory(VBox panel){
@@ -341,7 +405,7 @@ namespace Devlog
             GeneralInit(NewTab("General"));
             TagsInit(NewTab("Tags"));
 			InitEntries(NewTab("Entries"));
-            NewTab("AutoPrefix");
+			InitPrefix(NewTab("AutoPrefix"));
 			InitHistory(NewTab("Command History"));
             WriteLn("Welcome to Devlog!");
             WriteLn("Coded by: Tricky");

@@ -90,6 +90,7 @@
       <Link>Dependencies\TrickyUnits\FileList.cs</Link>
     </Compile>
     <Compile Include="Export.cs" />
+    <Compile Include="PureParse.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />
