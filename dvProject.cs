@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.17
+// Version: 18.11.20
 // EndLic
 
 using System;
@@ -37,7 +37,22 @@ namespace Devlog
 
 	}
 
-    class dvEntry{
+	class dvPrefix{
+		readonly Dictionary<string, string> Raw = new Dictionary<string, string>();
+
+		public dvPrefix(string Prefix="", int CD=10, int RESET=20){
+			this.Prefix = Prefix;
+			this.CD = CD;
+			this.Reset = RESET;
+		}
+
+		public string Prefix { get { return Raw["PREFIX"]; } set { Raw["PREFIX"] = value; }}
+		public int CD { get { return qstr.ToInt(Raw["CD"]); } set { Raw["CD"] = $"{value}"; }}
+		public int Reset { get { return qstr.ToInt(Raw["RESET"]); } set { Raw["RESET"] = $"{value}"; } }
+
+	}
+
+	class dvEntry{
 
         bool DoUpdate = true;
 		public bool Loaded = true;
@@ -330,7 +345,7 @@ namespace Devlog
         public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","18.11.17");
+            MKL.Version("Development Log - dvProject.cs","18.11.20");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
