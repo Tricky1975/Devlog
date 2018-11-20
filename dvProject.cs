@@ -296,6 +296,7 @@ namespace Devlog
 							GUI.WriteLn("Definition without prefix! Please check your prefix settings!");
 						} else {
 							pref.RawSet(key, value);
+							Console.WriteLine($"Prefix[\"{key}\"]=\"{value}\");
 						}
 					}
 				}
