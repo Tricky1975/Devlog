@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.18
+// Version: 18.11.20
 // EndLic
 
 using System;
@@ -99,6 +99,12 @@ namespace Devlog
 			var cp = CurrentProject;
 			if (cp == null) { GUI.WriteLn("ADD: No project!"); return; }
 			if (!cp.GotTag(tag)) { GUI.WriteLn($"ADD: Tag {tag} does not exist!"); return; }
+			// Prefix handling
+			foreach (string id in cp.Prefixes.Keys) {
+				var pf = cp.Prefixes[id];
+				pf.CD--;
+				if (pf.CD <= 0) { content = $"{pf.Prefix} {content}"; pf.CD += Math.Abs(pf.Reset); }
+			}
 			var e = new dvEntry(cp, tag, content);
 			GUI.WriteLn($"Added entry #{e.RecID}");
 			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);
@@ -119,7 +125,7 @@ namespace Devlog
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.18");
+            MKL.Version("Development Log - Command.cs","18.11.20");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
 			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };

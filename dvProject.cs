@@ -49,6 +49,7 @@ namespace Devlog
 		public string Prefix { get { return Raw["PREFIX"]; } set { Raw["PREFIX"] = value; }}
 		public int CD { get { return qstr.ToInt(Raw["CD"]); } set { Raw["CD"] = $"{value}"; }}
 		public int Reset { get { return qstr.ToInt(Raw["RESET"]); } set { Raw["RESET"] = $"{value}"; } }
+		public void RawSet(string key, string value) { Raw[key] = value; }
 
 	}
 
@@ -276,6 +277,29 @@ namespace Devlog
 			LoadedProjects[prjname] = ret;
 			GUI.WriteLn($"Records:        {ret.CountRecords}");
 			GUI.WriteLn($"Highest number: {ret.HighestRecordNumber}");
+			ret.Data.CL("CDPREFIX");
+			foreach (string iline in ret.Data.List("CDPREFIX")){
+				var line = iline.Trim();
+				dvPrefix pref=null;
+				if (line!=""){
+					var p = line.IndexOf(':');
+					if (p<0) {
+						GUI.WriteLn("Invalid Prefix definition!");
+					} else {
+						var key = line.Substring(0, p).Trim().ToUpper();
+						var value = line.Substring(p).Trim();
+						if (key=="NEW") {
+							pref = new dvPrefix();
+							ret.Prefixes[value] = pref;
+							GUI.WriteLn($"Prefix added:   {key}");
+						} else if (pref==null){
+							GUI.WriteLn("Definition without prefix! Please check your prefix settings!");
+						} else {
+							pref.RawSet(key, value);
+						}
+					}
+				}
+			}
 		closure:
 			bix.Close();
 			return ret;
