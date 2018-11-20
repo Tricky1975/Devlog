@@ -225,6 +225,7 @@ namespace Devlog
     class dvProject
     {
 		public Dictionary<int, dvIndex> Indexes = new Dictionary<int, dvIndex>();
+		public Dictionary<string, dvPrefix> Prefixes = new Dictionary<string, dvPrefix>();
 		public int autopush = 10;
 		string myname;
 		string myfile;
