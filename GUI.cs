@@ -25,6 +25,10 @@
 
 //#define KEYDEBUG // crap!
 
+
+
+/// ZIGGO INTERNET NEVER NO MORE!
+
 using System;
 using System.Reflection;
 using System.Collections.Generic;
