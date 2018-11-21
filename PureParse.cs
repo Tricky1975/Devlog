@@ -20,16 +20,47 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.20
+// Version: 18.11.21
 // EndLic
 
 using System;
+using System.Text.RegularExpressions;
+using TrickyUnits;
 namespace Devlog
 {
 	public class PureParse
 	{
 
 		public static string Go(string pure){
+			var words = pure.Split(' ');
+			var cp = dvProject.Get(GUI.CurrentProjectName);
+			var content = "";
+			if (cp == null) { GUI.WriteLn("Internal error! Parse attempt without a project!"); return ""; }
+			foreach( string word in words ){
+				var hashtag = word.IndexOf('#');
+				var newword = word;
+				if (qstr.Prefixed(word,"##")){
+					newword = word.Substring(1).Replace("##","#");
+				} else if (hashtag>=0 && qstr.ToInt(word.Substring(hashtag+1))>0){
+					var rsplit = word.Split('#');
+					if (Regex.Match(word, "##").Success) { newword = word.Replace("##", "#"); }
+					else if (rsplit.Length>2) { newword = word.Replace("##", "#"); }
+					else if (qstr.Left(word,1)=="#") {
+						if (cp.GitHub!=""){
+							newword = $"<a href='http://github.com/{cp.GitHub}/issues/{qstr.Right(word, qstr.Len(word) - 1)}'>{word}</a>";
+						} else {
+							newword = word;
+							GUI.WriteLn("WARNING! No github repository to refer to!");
+						}
+					} else {
+						newword = $"<a href='http://github.com/{rsplit[0]}/issues/{rsplit[1]}'>{word}</a>";
+					} 
+				} else if (qstr.Left(word,1)=="$"){
+					newword = cp.Data.C($"VAR.{word.Substring(1)}");
+				}
+				if (content != "") content += " ";
+				content += newword;
+			}
 			/* Original Blitz Code
 		For word=EachIn words
 			hashtag = word.find("#")
@@ -64,7 +95,7 @@ namespace Devlog
 		Next
 
 						 */
-			return "";
+			return content;
 
 		}
 
