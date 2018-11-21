@@ -22,7 +22,8 @@
 // 	to the project the exceptions are needed for.
 // Version: 18.11.20
 // EndLic
-﻿using System;
+
+using System;
 namespace Devlog
 {
 	public class PureParse
