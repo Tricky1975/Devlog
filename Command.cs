@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.20
+// Version: 18.11.21
 // EndLic
 
 using System;
@@ -122,13 +122,33 @@ namespace Devlog
 			} else {
 				GUI.WriteLn($"Auto-Push after {cp.autopush} more addtions");
 			}
-			// TODO: Auto prefix
+		}
+
+		static void Go(string url){
+			var result = url;
+			if (CurrentProject != null)
+			{
+				var vs = CurrentProject.Data.Vars();
+				foreach (string clown in vs)
+					if (qstr.Prefixed(clown, "VAR."))
+					{
+						var wvar = clown.Substring(4);
+						var oldresult = "";
+						do
+						{
+							oldresult = result;
+							result = result.Replace($"${wvar}", CurrentProject.Data.C(clown));
+						} while (oldresult != result);
+					}
+			} else { GUI.WriteLn("WARNING! There is no project loaded, so variables will not be parsed!"); }
+			GUI.WriteLn($"Opening URL: {result}");
+			if (!OURI.OpenUri(result)) GUI.WriteLn($"ERROR! Opening URL {result} failed!");
 		}
 
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.20");
+            MKL.Version("Development Log - Command.cs","18.11.21");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
 			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };
@@ -147,6 +167,7 @@ namespace Devlog
 				GUI.WriteLn($"This tool has been created and copyrighted by Jeroen P. Broks\nIs has been released under the terms of the GPL version 3\n\nCompiled on the next source files:\n\n{MKL.All()}"); 
 			};
 			Commands["CLS"] = delegate { GUI.ClearConsole(); };
+			Commands["GO"] = Go;
         }
 
         static void ThrowError(string error){
