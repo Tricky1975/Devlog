@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.20
+// Version: 18.11.21
 // EndLic
 
 using System;
@@ -46,6 +46,11 @@ namespace Devlog
 			this.Reset = RESET;
 		}
 
+		public void UnParse(string key,List<string> CDPREFIX){
+			CDPREFIX.Add($"NEW:{key}");
+			foreach (string key2 in Raw.Keys) CDPREFIX.Add($"{key2.ToUpper()}:{Raw[key2]}");
+		}
+
 		public string Prefix { get { return Raw["PREFIX"]; } set { Raw["PREFIX"] = value; }}
 		public int CD { get { return qstr.ToInt(Raw["CD"]); } set { Raw["CD"] = $"{value}"; }}
 		public int Reset { get { return qstr.ToInt(Raw["RESET"]); } set { Raw["RESET"] = $"{value}"; } }
@@ -61,8 +66,8 @@ namespace Devlog
 		readonly dvProject project;
 
         void ParseText(){
-            // Actual parsing comes later!
-        }
+			core["TEXT"] = PureParse.Go(Pure);
+		}
 
         void UpdateMe(){
             if (!DoUpdate) return;
@@ -100,7 +105,6 @@ namespace Devlog
 			DoUpdate = false; // must be first
             Tag = atag;
             Pure = apure;
-			core["TEXT"] = apure; // TODO: REMOVE THIS LINE ONCE ACTUAL TEXT PARSING'S DONE!!!!
 			var now = DateTime.Now;
 			string[] months = { "?", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 			core["DATE"] = $"{now.Day} {months[now.Month]} {now.Year}";
@@ -226,7 +230,7 @@ namespace Devlog
     class dvProject
     {
 		public Dictionary<int, dvIndex> Indexes = new Dictionary<int, dvIndex>();
-		public Dictionary<string, dvPrefix> Prefixes = new Dictionary<string, dvPrefix>();
+		public SortedDictionary<string, dvPrefix> Prefixes = new SortedDictionary<string, dvPrefix>();
 		public int autopush = 10;
 		string myname;
 		string myfile;
@@ -371,12 +375,17 @@ namespace Devlog
         public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","18.11.20");
+            MKL.Version("Development Log - dvProject.cs","18.11.21");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
         public void SaveMe(){
 			Console.WriteLine($"Saving: {myfile}");
+			var CDPREFIX = Data.List("CDPREFIX");
+			CDPREFIX.Clear();
+			foreach(string key in Prefixes.Keys){
+				Prefixes[key].UnParse(key,CDPREFIX);
+			}
 			Data.SaveSource(myfile+".prj");
 		} 
 
