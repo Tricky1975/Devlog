@@ -333,8 +333,8 @@ namespace Devlog
 			var ls = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string), typeof(string));
 			//var bt = QOpen.ReadFile(cp.EntryFile);
 			//while (!bt.EOF){
-			for (int i = start; i <= einde;i++){
-				var e = new dvEntry(cp, i); //(bt, start, einde);
+			for (int i = einde; i >= start;i--){
+				var e = new dvEntry(cp, i,true); //(bt, start, einde);
 				if (e == null) break;
 				if (e.Loaded) ls.AppendValues($"{i}", e.Tag, e.Pure, e.Date, e.Time);
 			}
