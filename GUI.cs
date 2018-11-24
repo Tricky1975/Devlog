@@ -61,6 +61,8 @@ namespace Devlog
 
 		static Dictionary<string, Entry> GenEntries = new Dictionary<string, Entry>();
 
+		public static void ClearHistory() => CommandHistory.Clear();
+
 		static void AndACTION(object sender, EventArgs a)
 		{
 			CommandHistory.AddItem(Prompt.Text);

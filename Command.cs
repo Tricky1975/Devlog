@@ -166,7 +166,9 @@ namespace Devlog
 			Commands["ABOUT"] = delegate { 
 				GUI.WriteLn($"This tool has been created and copyrighted by Jeroen P. Broks\nIs has been released under the terms of the GPL version 3\n\nCompiled on the next source files:\n\n{MKL.All()}"); 
 			};
+			Commands["CLH"] = delegate { GUI.ClearHistory(); };
 			Commands["CLS"] = delegate { GUI.ClearConsole(); };
+			Commands["PUSH"] = delegate { GUI.WriteLn("Thanks to Ziggo I cannot push yet, but that comes later!"); };
 			Commands["GO"] = Go;
         }
 
