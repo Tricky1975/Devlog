@@ -144,7 +144,7 @@ namespace Devlog
         }
 		*/
 
-		public dvEntry(object aprj, int want) { //}, int max) {
+		public dvEntry(object aprj, int want, bool no404=false) { //}, int max) {
 			var prj = (dvProject)aprj;
 			RecID = want;
 			project = prj;
@@ -202,7 +202,7 @@ namespace Devlog
 								   //var bix = QOpen.ReadFile($"{prj}.Index");
 			var bcn = QOpen.ReadFile($"{prj.PrjFile}.Content");
 			byte tag = 0;
-			if (!prj.Indexes.ContainsKey(want)) { GUI.WriteLn($"ERROR! Index {want} not found!"); goto closure; }
+			if (!prj.Indexes.ContainsKey(want)) { if (!no404) GUI.WriteLn($"ERROR! Index {want} not found!"); goto closure; }
 			var Index = prj.Indexes[want];
 			int id = Index.id; //-100;
 			long size = Index.size;
