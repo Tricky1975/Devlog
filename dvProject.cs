@@ -212,7 +212,7 @@ namespace Devlog
 			while (bcn.Position < einde) {
 				if (bcn.Position > einde) { GUI.WriteLn("ERROR! Index read pointer exceeds ending point!"); goto closure; }
 				tag = bcn.ReadByte();
-				if (tag != 0) { GUI.WriteLn($"ERRROR! Unknown content command tag {tag}"); goto closure; }
+				if (tag != 0) { GUI.WriteLn($"ERROR! Unknown content command tag {tag}"); goto closure; }
 				var key = bcn.ReadString();
 				var value = bcn.ReadString();
 #if DEBUG
