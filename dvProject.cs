@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.24
+// Version: 18.11.25
 // EndLic
 
 using System;
@@ -200,7 +200,7 @@ namespace Devlog
 		} */
 			if (want < 0) return;  // Ignore stuff that is too low
 								   //var bix = QOpen.ReadFile($"{prj}.Index");
-			var bcn = QOpen.ReadFile($"{prj.PrjFile}.Content");
+			var bcn = QuickStream.ReadFile($"{prj.PrjFile}.Content");
 			byte tag = 0;
 			if (!prj.Indexes.ContainsKey(want)) { if (!no404) GUI.WriteLn($"ERROR! Index {want} not found!"); goto closure; }
 			var Index = prj.Indexes[want];
@@ -240,7 +240,9 @@ namespace Devlog
 		public string PrjFile { get { return myfile; }}
 		public string PrjName { get { return myname; }}
 
+
         static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
+
         static public dvProject Get(string prjname){
             if (LoadedProjects.ContainsKey(prjname)) return LoadedProjects[prjname];
             GUI.WriteLn($"Loading project: {prjname}");
@@ -262,7 +264,7 @@ namespace Devlog
                 return null;
             }
 			// Load Indexes
-			var bix = QOpen.ReadFile($"{ret.myfile}.Index");
+			var bix = QuickStream.ReadFile($"{ret.myfile}.Index");
 			byte tag;
 			dvIndex Index;
 			GUI.WriteLn($"Loading indexes for project: {prjname}");
@@ -311,7 +313,7 @@ namespace Devlog
         }
 
 		public void SaveIndexes(){
-			var bix = QOpen.WriteFile($"{myfile}.Index");
+			var bix = QuickStream.WriteFile($"{myfile}.Index");
 			foreach(dvIndex idx in Indexes.Values){
 				bix.WriteByte(0);
 				bix.WriteInt(idx.id);
@@ -375,7 +377,7 @@ namespace Devlog
         public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","18.11.24");
+            MKL.Version("Development Log - dvProject.cs","18.11.25");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
