@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.11.24
+// Version: 18.11.25
 // EndLic
 
 using System;
@@ -124,6 +124,16 @@ namespace Devlog
 			}
 		}
 
+		static void Delete(string id){
+			var cp = CurrentProject;
+			if (cp == null) { GUI.WriteLn("DELETE: No project"); return; }
+			var i = qstr.ToInt(id);
+			if (!cp.Indexes.ContainsKey(i)) { GUI.WriteLn("DELETE: Unidentified entry number"); return;  }
+			cp.Indexes.Remove(i);
+			GUI.WriteLn($"Entry #{i} has been unlinked!");
+			GUI.UpdateEntries(cp.HighestRecordNumber - 200,cp.HighestRecordNumber);
+		}
+
 		static void Go(string url){
 			var result = url;
 			if (CurrentProject != null)
@@ -148,7 +158,7 @@ namespace Devlog
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.24");
+            MKL.Version("Development Log - Command.cs","18.11.25");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
 			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };
@@ -170,6 +180,12 @@ namespace Devlog
 			Commands["CLS"] = delegate { GUI.ClearConsole(); };
 			Commands["PUSH"] = delegate { GUI.WriteLn("Thanks to Ziggo I cannot push yet, but that comes later!"); };
 			Commands["GO"] = Go;
+			Commands["UNLINK"] = Delete;
+			Commands["DELETE"] = Delete;
+			Commands["KILL"] = Delete;
+			Commands["RM"] = Delete;
+			Commands["REMOVE"] = Delete;
+			Commands["DEL"] = Delete;
         }
 
         static void ThrowError(string error){
