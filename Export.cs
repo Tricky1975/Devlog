@@ -1,34 +1,36 @@
 // Lic:
-// 	Devlog
-// 	Export
-// 	
-// 	
-// 	
-// 	(c) Jeroen P. Broks, 2018, All rights reserved
-// 	
-// 		This program is free software: you can redistribute it and/or modify
-// 		it under the terms of the GNU General Public License as published by
-// 		the Free Software Foundation, either version 3 of the License, or
-// 		(at your option) any later version.
-// 		
-// 		This program is distributed in the hope that it will be useful,
-// 		but WITHOUT ANY WARRANTY; without even the implied warranty of
-// 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// 		GNU General Public License for more details.
-// 		You should have received a copy of the GNU General Public License
-// 		along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 		
-// 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
-// 	to the project the exceptions are needed for.
-// Version: 18.11.24
+// Devlog
+// Export
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 19.06.25
 // EndLic
 
-#undef TempOutput
 
+#undef TempOutput
 
 using System;
 using TrickyUnits;
 using TrickyUnits.GTK;
+
 namespace Devlog
 {
 	public class Export
@@ -42,7 +44,7 @@ namespace Devlog
 
 
 		static public void Hello(){
-			MKL.Version("Development Log - Export.cs","18.11.24");
+			MKL.Version("Development Log - Export.cs","19.06.25");
 			MKL.Lic    ("Development Log - Export.cs","GNU General Public License 3");
 		}
 
@@ -50,7 +52,12 @@ namespace Devlog
 		static public void Gen(){
 			string template;
 			var cp = CurrentProject; if (cp == null) { GUI.WriteLn("GEN: No project!"); return; }
-			System.IO.Directory.CreateDirectory(OutDir);
+            try {
+                System.IO.Directory.CreateDirectory(OutDir);
+            } catch(Exception e) {
+                GUI.WriteLn($"GEN: {e.Message}");
+                return;
+            }
 			int pages = cp.CountRecords / 200;
 			int page = 1;
 			int pcountdown = 200;
@@ -83,11 +90,13 @@ namespace Devlog
 					string contentstyle = cp.Data.C($"INHD.{rec.Tag.ToUpper()}");
 					content += $"<tr valign=top><td align=left><a id='dvRec_{rec.RecID}'></a>{rec.Time}</td><td style=\"{headstyle}\">{rec.Tag}</td><td style='width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; {contentstyle}'><div style=\"width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; overflow-x:auto;\">";
 					var icon = $"{OutDir}/Icons/{rec.Tag.ToLower()}";
-					icon = icon.Replace("#", "hashtag");
-					foreach (string pfmt in iconext) {
+                    var neticon = $"Icons/{rec.Tag.ToLower()}";
+                    neticon = neticon.Replace("#", "%23");
+                    icon = icon.Replace("#", "hashtag");
+                    foreach (string pfmt in iconext) {
 						var iconfile = $"{icon}.{pfmt}";
 						iconfile = iconfile.Replace("#", "%23");
-						if (System.IO.File.Exists(iconfile)) { content += $"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")}; height:{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)}' src='{iconfile}' alt='{rec.Tag}'>"; break; }
+                        if (System.IO.File.Exists(iconfile)) { content += $"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")}; height:{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)}' src='{neticon}.{pfmt}' alt='{rec.Tag}'>"; break; }
 					}
 					content += $"{rec.Text}</div></td></tr>\n";
 					pcountdown--;
@@ -115,3 +124,4 @@ namespace Devlog
 		}
 	}
 }
+
