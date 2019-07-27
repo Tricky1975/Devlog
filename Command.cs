@@ -155,6 +155,35 @@ namespace Devlog
 			if (!OURI.OpenUri(result)) GUI.WriteLn($"ERROR! Opening URL {result} failed!");
 		}
 
+        static void Create(string project) {
+            GUI.WriteLn("Creating project");
+            var prj = project.Replace(" ", "_").Replace("/", ".").Replace("\\", ".");
+            var np = new dvProject(prj); np.Data.CL("TAGS");
+            GUI.WriteLn($"Codename: {np.PrjName}, using file {np.PrjName}");
+            GUI.WriteLn("Setting up base tags");
+            var tags = np.Data.List("TAGS");
+            tags.Add("SITE");
+            tags.Add("GENERAL");
+            tags.Add("BUG");
+            tags.Add("FIXED");
+            GUI.WriteLn("Configuring Base tags");
+            np.DefData($"HEAD.SITE", $"background-color:rgb(0,0,0); color:rgb(255,255,255);");
+            np.DefData($"INHD.SITE", $"background-color:rgb(127,127,127); color:rgb(255,255,255);");
+            np.DefData($"HEAD.GENERAL", $"background-color:rgb(0,0,0); color:rgb(0,255,255);");
+            np.DefData($"INHD.GENERAL", $"background-color:rgb(0,127,127); color:rgb(0,255,255);");
+            np.DefData($"HEAD.BUG", $"background-color:rgb(0,0,0); color:rgb(255,0,0);");
+            np.DefData($"INHD.BUG", $"background-color:rgb(127,0,0); color:rgb(255,0,0);");
+            np.DefData($"HEAD.FIXED", $"background-color:rgb(0,0,0); color:rgb(255,0,0);");
+            np.DefData($"INHD.FIXED", $"background-color:rgb(0,127,0); color:rgb(0,255,0);");
+            GUI.WriteLn("First entry!");
+            new dvEntry(np, "SITE", $"Devlog created on {DateTime.Now.ToLongDateString()}; {DateTime.Now.ToLongTimeString()}.<p>Codenamed: {prj}");
+            GUI.WriteLn("Saving for security's sake");
+            np.SaveMe();
+            GUI.WriteLn("Renew project list");
+            GUI.RenewProjects();
+            GUI.WriteLn($"Project {prj} has been created");
+        }
+
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
@@ -186,6 +215,7 @@ namespace Devlog
 			Commands["RM"] = Delete;
 			Commands["REMOVE"] = Delete;
 			Commands["DEL"] = Delete;
+            Commands["CREATE"] = Create;
         }
 
         static void ThrowError(string error){

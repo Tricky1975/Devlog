@@ -391,10 +391,16 @@ namespace Devlog
 				Prefixes[key].UnParse(key,CDPREFIX);
 			}
 			Data.SaveSource(myfile+".prj");
-		} 
+		}
 
-        public dvProject()
-        {
+        public dvProject() {
+            System.Diagnostics.Debug.WriteLine("Creating project record 'on-the-fly'");
+        }
+
+        public dvProject(string name) {
+            myname = name;
+            myfile = $"{MainClass.WorkSpace}/Projects/{myname}";
+            System.Diagnostics.Debug.WriteLine($"Project record '{myname}' created!");
         }
     }
 }
