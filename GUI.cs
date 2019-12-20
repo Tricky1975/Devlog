@@ -1,26 +1,27 @@
 // Lic:
-// 	Development Log
-// 	
-// 	
-// 	
-// 	
-// 	(c) Jeroen P. Broks, 2016, 2017, 2018, All rights reserved
-// 	
-// 		This program is free software: you can redistribute it and/or modify
-// 		it under the terms of the GNU General Public License as published by
-// 		the Free Software Foundation, either version 3 of the License, or
-// 		(at your option) any later version.
-// 		
-// 		This program is distributed in the hope that it will be useful,
-// 		but WITHOUT ANY WARRANTY; without even the implied warranty of
-// 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// 		GNU General Public License for more details.
-// 		You should have received a copy of the GNU General Public License
-// 		along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 		
-// 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
-// 	to the project the exceptions are needed for.
-// Version: 18.11.24
+// Devlog
+// Graphic User Interface
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 19.12.20
 // EndLic
 
 //#define KEYDEBUG // crap!
@@ -58,6 +59,7 @@ namespace Devlog
 		static ListBox CommandHistory;
 		static TreeView PrefixTable;
 
+        static public void SetPrompt(string s) { Prompt.Text = s; }
 
 		static Dictionary<string, Entry> GenEntries = new Dictionary<string, Entry>();
 
@@ -65,9 +67,10 @@ namespace Devlog
 
 		static void AndACTION(object sender, EventArgs a)
 		{
-			CommandHistory.AddItem(Prompt.Text);
-			CommandClass.DoCommand(Prompt.Text);
+            var cmd = Prompt.Text;
 			Prompt.Text = "";
+			CommandHistory.AddItem(cmd);
+			CommandClass.DoCommand(cmd);
 		}
 
 		static Entry GeneralAdd(VBox Panel, string codename, string Caption)
@@ -367,7 +370,7 @@ namespace Devlog
 		public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
-            MKL.Version("Development Log - GUI.cs","18.11.24");
+            MKL.Version("Development Log - GUI.cs","19.12.20");
             Application.Init();
             win = new MainWindow();
             win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));

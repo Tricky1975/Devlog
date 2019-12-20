@@ -21,7 +21,7 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.06.25
+// Version: 19.12.20
 // EndLic
 
 
@@ -379,7 +379,7 @@ namespace Devlog
         public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","19.06.25");
+            MKL.Version("Development Log - dvProject.cs","19.12.20");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
@@ -404,4 +404,3 @@ namespace Devlog
         }
     }
 }
-

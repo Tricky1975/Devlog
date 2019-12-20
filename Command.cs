@@ -1,26 +1,27 @@
 // Lic:
-// 	Development Log
-// 	
-// 	
-// 	
-// 	
-// 	(c) Jeroen P. Broks, 2016, 2017, 2018, All rights reserved
-// 	
-// 		This program is free software: you can redistribute it and/or modify
-// 		it under the terms of the GNU General Public License as published by
-// 		the Free Software Foundation, either version 3 of the License, or
-// 		(at your option) any later version.
-// 		
-// 		This program is distributed in the hope that it will be useful,
-// 		but WITHOUT ANY WARRANTY; without even the implied warranty of
-// 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// 		GNU General Public License for more details.
-// 		You should have received a copy of the GNU General Public License
-// 		along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 		
-// 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
-// 	to the project the exceptions are needed for.
-// Version: 18.11.25
+// DevLog
+// Commands
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 19.12.20
 // EndLic
 
 using System;
@@ -99,14 +100,16 @@ namespace Devlog
 			var cp = CurrentProject;
 			if (cp == null) { GUI.WriteLn("ADD: No project!"); return; }
 			if (!cp.GotTag(tag)) { GUI.WriteLn($"ADD: Tag {tag} does not exist!"); return; }
-			// Prefix handling
+            // Prefix handling
+            var MustSave = false;
 			foreach (string id in cp.Prefixes.Keys) {
 				var pf = cp.Prefixes[id];
 				pf.CD--;
 				//GUI.WriteLn($"Prefix {id} CD at: {pf.CD}/{pf.Reset}");
-				if (pf.CD <= 0) { content = $"{pf.Prefix} {content}"; pf.CD += Math.Abs(pf.Reset); cp.SaveMe(); }
+				if (pf.CD <= 0) { content = $"{pf.Prefix} {content}"; pf.CD += Math.Abs(pf.Reset); MustSave = true; }
 			}
-			var e = new dvEntry(cp, tag, content);
+            if (MustSave) cp.SaveMe();
+            var e = new dvEntry(cp, tag, content);
 			GUI.WriteLn($"Added entry #{e.RecID}");
 			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);
 			GUI.UpdatePrefix();
@@ -187,7 +190,7 @@ namespace Devlog
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","18.11.25");
+            MKL.Version("Development Log - Command.cs","19.12.20");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
 			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };
@@ -216,6 +219,30 @@ namespace Devlog
 			Commands["REMOVE"] = Delete;
 			Commands["DEL"] = Delete;
             Commands["CREATE"] = Create;
+            Commands["SAVE"] = delegate { if (CurrentProject != null) { CurrentProject.SaveMe(); GUI.WriteLn("Saved!"); } else Annoy("No Project!"); };
+            Commands["EDIT"] = delegate (string num) {
+                if (CurrentProject == null) { Annoy("No Project!"); return; }
+                var e = new dvEntry(CurrentProject, qstr.ToInt(num), true);
+                if (e==null) { Annoy("Entry couldn't be accessed!"); return; }
+                GUI.SetPrompt($"MODIFY {num} {e.Tag} {e.Pure}");
+            };
+            Commands["MODIFY"] = delegate (string str) {
+                var args = str.Split(' ');
+                if (CurrentProject == null) { Annoy("No Project!"); return; }
+                if (args.Length<3) { Annoy("Modify syntax error!"); return; }
+                var num = qstr.ToInt(args[0]);
+                var e = new dvEntry(CurrentProject, num, true);
+                if (e == null) { Annoy("Entry couldn't be accessed!"); return; }
+                var tag = args[1].ToUpper();
+                if (!CurrentProject.GotTag(tag)) { Annoy($"There's no tag: {tag}"); return; }
+                var sb = new System.Text.StringBuilder();
+                e.Tag = tag;
+                for (int i = 2; i < args.Length; ++i) sb.Append($"{args[i]} ");
+                e.Pure = sb.ToString().Trim();
+                GUI.UpdateEntries(CurrentProject.HighestRecordNumber - 200, CurrentProject.HighestRecordNumber);
+            };
+
+
         }
 
         static void ThrowError(string error){
