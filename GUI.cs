@@ -4,7 +4,7 @@
 // 
 // 
 // 
-// (c) Jeroen P. Broks, 
+// (c) Jeroen P. Broks, 2016, 2017, 2018, 2020
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.12.20
+// Version: 20.07.24
 // EndLic
 
 //#define KEYDEBUG // crap!
@@ -378,7 +378,7 @@ namespace Devlog
 		public static void Init()
         {
             MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
-            MKL.Version("Development Log - GUI.cs","19.12.20");
+            MKL.Version("Development Log - GUI.cs","20.07.24");
             Application.Init();
             win = new MainWindow();
             win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));

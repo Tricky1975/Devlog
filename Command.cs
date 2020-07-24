@@ -4,7 +4,7 @@
 // 
 // 
 // 
-// (c) Jeroen P. Broks, 
+// (c) Jeroen P. Broks, 2016, 2017, 2018, 2020
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.12.20
+// Version: 20.07.24
 // EndLic
 
 using System;
@@ -190,7 +190,7 @@ namespace Devlog
         static public void Init()
         {
             MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","19.12.20");
+            MKL.Version("Development Log - Command.cs","20.07.24");
             Commands["ANNOY"] = Annoy;
             Commands["BYE"] = Bye;
 			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };
