@@ -123,7 +123,7 @@ namespace Devlog
 			} else if (cp.autopush==0) {
 				GUI.WriteLn("Next addition will trigger the autopush");
 			} else {
-				GUI.WriteLn($"Auto-Push after {cp.autopush} more addtions");
+				GUI.WriteLn($"Auto-Push after {cp.autopush+1} more additions");
 			}
 		}
 

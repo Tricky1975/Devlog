@@ -51,6 +51,7 @@ namespace Devlog
 		static HBox TagEditBox;
 		static Entry TagEditHead;
 		static Entry TagEditEntry;
+        static Entry TagEditIcon;
 		static bool AllowEdit = true;
 		static public string CurrentProjectName = "";
 		static dvProject CurrentProject { get { if (CurrentProjectName == "") return null; return dvProject.Get(CurrentProjectName); } }// Acutal return comes later!
@@ -183,18 +184,23 @@ namespace Devlog
 			var tv = TagList.Gadget; sw.Add(tv);
 			var lb1 = new Label("Head"); lb1.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
 			var lb2 = new Label("Content"); lb2.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
-			TagEditHead = new Entry(); RequireTag.Add(TagEditHead);
+            var lb3 = new Label("Icon"); lb3.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
+            TagEditHead = new Entry(); RequireTag.Add(TagEditHead);
 			TagEditEntry = new Entry(); RequireTag.Add(TagEditEntry);
+            TagEditIcon = new Entry(); RequireTag.Add(TagEditIcon);
 			TagEditBox.Add(lb1);
 			TagEditBox.Add(TagEditHead);
 			TagEditBox.Add(lb2);
 			TagEditBox.Add(TagEditEntry);
+            TagEditBox.Add(lb3);
+            TagEditBox.Add(TagEditIcon);
 			panel.Add(TagEditBox);
 			TagList.Gadget.RulesHint = true;
 			RequireProject.Add(TagList.Gadget);
 			TagList.Gadget.CursorChanged += OnTagSelect;
 			TagEditHead.Changed += OnEditTag;
 			TagEditEntry.Changed += OnEditTag;
+            TagEditIcon.Changed += OnEditTag;
 		}
 
 		static public void UpdateTags()
@@ -211,6 +217,7 @@ namespace Devlog
 			var tag = TagList.ItemText;
 			TagEditHead.Text = CurrentProject.GetData($"HEAD.{tag}");
 			TagEditEntry.Text = CurrentProject.GetData($"INHD.{tag}");
+            TagEditIcon.Text = CurrentProject.GetData($"ICON.{tag}");
 			AllowEdit = true;
 			AutoEnable();
 		}
@@ -221,6 +228,7 @@ namespace Devlog
 			var s = (Entry)sender;
 			var h = "INHD";
 			if (s == TagEditHead) h = "HEAD";
+            if (s == TagEditIcon) h = "ICON";
 			CurrentProject.DefData($"{h}.{TagList.ItemText}", s.Text);
 		}
 
