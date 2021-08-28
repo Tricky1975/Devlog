@@ -4,7 +4,7 @@
 // 
 // 
 // 
-// (c) Jeroen P. Broks, 
+// (c) Jeroen P. Broks, 2016, 2017, 2018, 2021
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 // Please note that some references to data like pictures or audio, do not automatically
 // fall under this licenses. Mostly this is noted in the respective files.
 // 
-// Version: 19.12.20
+// Version: 21.08.28
 // EndLic
 
 
@@ -384,7 +384,7 @@ namespace Devlog
         public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
 
         static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","19.12.20");
+            MKL.Version("Development Log - dvProject.cs","21.08.28");
             MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
         }
 
