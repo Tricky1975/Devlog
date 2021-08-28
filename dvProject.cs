@@ -62,17 +62,17 @@ namespace Devlog
 
 	class dvEntry{
 
-        bool DoUpdate = true;
+		bool DoUpdate = true;
 		public bool Loaded = true;
 		readonly public int RecID;
 		readonly dvProject project;
 
-        void ParseText(){
+		void ParseText(){
 			core["TEXT"] = PureParse.Go(Pure);
 		}
 
-        void UpdateMe(){
-            if (!DoUpdate) return;
+		void UpdateMe(){
+			if (!DoUpdate) return;
 			var newindex = new dvIndex();
 			newindex.id = RecID;
 			var bt = new QuickStream(System.IO.File.OpenWrite($"{project.PrjFile}.Content")); // Does this append?
@@ -89,61 +89,61 @@ namespace Devlog
 			newindex.offset = start;
 			project.Indexes[RecID] = newindex;
 			project.SaveIndexes();
-        }
+		}
 
-        public readonly Dictionary<string, string> core = new Dictionary<string, string>();
-        public string Tag { get => core["TAG"]; set { core["TAG"] = value; UpdateMe(); }}
-        public string Pure { get => core["PURE"]; set { core["PURE"] = value; ParseText(); UpdateMe(); }}
-        public string Text { get => core["TEXT"]; } // No set, as this is the result as parsing from "pure".
-        public string Date { get => core["DATE"]; } // No midifications needed here (yet)
-        public string Time { get => core["TIME"]; }
-        public string Modified { get { if (core.ContainsKey("MODIFIED")) return core["MODIFIED"]; return ""; } set { if (!core.ContainsKey("MODIFIED")) core["MODIFIED"] = value; else core["MODIFIED"] += $"; {value}"; } }
+		public readonly Dictionary<string, string> core = new Dictionary<string, string>();
+		public string Tag { get => core["TAG"]; set { core["TAG"] = value; UpdateMe(); }}
+		public string Pure { get => core["PURE"]; set { core["PURE"] = value; ParseText(); UpdateMe(); }}
+		public string Text { get => core["TEXT"]; } // No set, as this is the result as parsing from "pure".
+		public string Date { get => core["DATE"]; } // No midifications needed here (yet)
+		public string Time { get => core["TIME"]; }
+		public string Modified { get { if (core.ContainsKey("MODIFIED")) return core["MODIFIED"]; return ""; } set { if (!core.ContainsKey("MODIFIED")) core["MODIFIED"] = value; else core["MODIFIED"] += $"; {value}"; } }
 
-        // Creates new entry
-        public dvEntry(object aprj, string atag,string apure){
+		// Creates new entry
+		public dvEntry(object aprj, string atag,string apure){
 			// TODO: Pure => text parsing!
 			var prj = (dvProject)aprj;
 			project = prj;
 			DoUpdate = false; // must be first
-            Tag = atag;
-            Pure = apure;
+			Tag = atag;
+			Pure = apure;
 			var now = DateTime.Now;
 			string[] months = { "?", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 			core["DATE"] = $"{now.Day} {months[now.Month]} {now.Year}";
 			core["TIME"] = $"{now.Hour}:{qstr.Right($"0{now.Minute}", 2)}";
 			RecID = prj.HighestRecordNumber + 1;
-            DoUpdate = true;  // must be last
+			DoUpdate = true;  // must be last
 			UpdateMe();
-        }
+		}
 
 		/* NO!
-        // Obtains entry from .Entries file
-        public dvEntry(int id,string byProject){
-            DoUpdate = false; // must be first
+		// Obtains entry from .Entries file
+		public dvEntry(int id,string byProject){
+			DoUpdate = false; // must be first
 			core["TAG"] = "UNKNOWN";
 			core["PURE"] = "?";
 			core["TEXT"] = "?";
 			core["DATE"] = "5000 B.C, maybe?";
 			core["TIME"] = "Mystery time!";
 			// None of the values above may ever pop up, but ya never know!
-            int tid = -10;
-            foreach(string fline in QOpen.LoadString($"{MainClass.WorkSpace}/Entries/{byProject}.Entries").Split('\n')){
-                var line = fline.Trim();
-                if (line != ""){
-                    if (line == "PUSH"){
+			int tid = -10;
+			foreach(string fline in QOpen.LoadString($"{MainClass.WorkSpace}/Entries/{byProject}.Entries").Split('\n')){
+				var line = fline.Trim();
+				if (line != ""){
+					if (line == "PUSH"){
 						if (tid == id) { RecID=id; return; }
-                    } else {
-                        var pos = line.IndexOf(':');
-                        if (pos < 0) Console.WriteLine("WARNING! Malformed line in entry file!"); else {
-                            var key = line.Substring(0, pos).ToUpper().Trim();
-                            var value = line.Substring(pos).Trim();
-                            if (key == "NEW") tid = qstr.ToInt(value); else if (tid==id) core[key.ToUpper()] = value;
-                        }
-                    }
-                }
-            }
-            DoUpdate = true;  // must be last
-        }
+					} else {
+						var pos = line.IndexOf(':');
+						if (pos < 0) Console.WriteLine("WARNING! Malformed line in entry file!"); else {
+							var key = line.Substring(0, pos).ToUpper().Trim();
+							var value = line.Substring(pos).Trim();
+							if (key == "NEW") tid = qstr.ToInt(value); else if (tid==id) core[key.ToUpper()] = value;
+						}
+					}
+				}
+			}
+			DoUpdate = true;  // must be last
+		}
 		*/
 
 		public dvEntry(object aprj, int want, bool no404=false) { //}, int max) {
@@ -227,10 +227,10 @@ namespace Devlog
 			//bix.Close();
 			bcn.Close();
 		}
-    }
+	}
 
-    class dvProject
-    {
+	class dvProject
+	{
 		public Dictionary<int, dvIndex> Indexes = new Dictionary<int, dvIndex>();
 		public SortedDictionary<string, dvPrefix> Prefixes = new SortedDictionary<string, dvPrefix>();
 		public int autopush = 10;
@@ -243,9 +243,9 @@ namespace Devlog
 		public string PrjName { get { return myname; }}
 
 
-        static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
+		static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
 
-        static public dvProject Get(string prjname) {
+		static public dvProject Get(string prjname) {
 			try {
 				if (LoadedProjects.ContainsKey(prjname)) return LoadedProjects[prjname];
 				GUI.WriteLn($"Loading project: {prjname}");
@@ -316,8 +316,8 @@ namespace Devlog
 			} catch (Exception E) {
 				QuickGTK.Error(E.Message);
 				return null;
-            }
-        }
+			}
+		}
 
 		public void SaveIndexes(){
 			var bix = QuickStream.WriteFile($"{myfile}.Index");
@@ -333,7 +333,7 @@ namespace Devlog
 		public bool GotTag(string tag) => Data.List("TAGS").Contains(tag.Trim().ToUpper());
 
 		public string EntryFile { get { return $"{myfile}.Entries"; }}
-        public TGINI Data = new TGINI();
+		public TGINI Data = new TGINI();
 		public int CountRecords { get {
 				/* old
 				if (countrecords >= 0) return countrecords;
@@ -380,15 +380,15 @@ namespace Devlog
 		public int GetDataDefaultInt(string f, int defaultvalue, bool autosave = true) => qstr.ToInt(GetDataDefault(f, $"{defaultvalue}", autosave));
 
 		public string GitHub { get => Data.C("GITHUBREPOSITORY").Trim();  set { Data.D("GITHUBREPOSITORY", value); SaveMe(); } }
-        public string Target { get => Data.C($"TARGET.{MainClass.Platform}").Trim();  set { Data.D($"TARGET.{MainClass.Platform}",value); SaveMe(); }}
-        public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
+		public string Target { get => Data.C($"TARGET.{MainClass.Platform}").Trim();  set { Data.D($"TARGET.{MainClass.Platform}",value); SaveMe(); }}
+		public string Template { get => Data.C($"TEMPLATE.{MainClass.Platform}").Trim(); set { Data.D($"TEMPLATE.{MainClass.Platform}", value); SaveMe(); }}
 
-        static public void Hi(){
-            MKL.Version("Development Log - dvProject.cs","21.08.28");
-            MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
-        }
+		static public void Hi(){
+			MKL.Version("Development Log - dvProject.cs","21.08.28");
+			MKL.Lic    ("Development Log - dvProject.cs","GNU General Public License 3");
+		}
 
-        public void SaveMe(){
+		public void SaveMe(){
 			Console.WriteLine($"Saving: {myfile}");
 			var CDPREFIX = Data.List("CDPREFIX");
 			CDPREFIX.Clear();
@@ -398,14 +398,14 @@ namespace Devlog
 			Data.SaveSource(myfile+".prj");
 		}
 
-        public dvProject() {
-            System.Diagnostics.Debug.WriteLine("Creating project record 'on-the-fly'");
-        }
+		public dvProject() {
+			System.Diagnostics.Debug.WriteLine("Creating project record 'on-the-fly'");
+		}
 
-        public dvProject(string name) {
-            myname = name;
-            myfile = $"{MainClass.WorkSpace}/Projects/{myname}";
-            System.Diagnostics.Debug.WriteLine($"Project record '{myname}' created!");
-        }
-    }
+		public dvProject(string name) {
+			myname = name;
+			myfile = $"{MainClass.WorkSpace}/Projects/{myname}";
+			System.Diagnostics.Debug.WriteLine($"Project record '{myname}' created!");
+		}
+	}
 }
