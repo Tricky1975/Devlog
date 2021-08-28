@@ -245,73 +245,78 @@ namespace Devlog
 
         static Dictionary<string, dvProject> LoadedProjects = new Dictionary<string, dvProject>();
 
-        static public dvProject Get(string prjname){
-            if (LoadedProjects.ContainsKey(prjname)) return LoadedProjects[prjname];
-            GUI.WriteLn($"Loading project: {prjname}");
-            var ret = new dvProject();
-            ret.myname = prjname;
-            ret.myfile = $"{MainClass.WorkSpace}/Projects/{ret.myname}";
-            try {
-                ret.Data = GINI.ReadFromFile($"{ret.myfile}.prj");
-            } catch {
-                GUI.WriteLn($"ERROR:\tI could not read {ret.myfile}.prj");
-                QuickGTK.Error($"!!ERROR!!\n\nI could not read {ret.myfile}.prj");
-                return null;
-            } finally {
-                GUI.WriteLn("Complete!");
-            }
-            if(ret.Data==null){
-                GUI.WriteLn($"ERROR:\tI could not read {ret.myfile}.prj");
-                QuickGTK.Error($"!!ERROR!!\n\nI could not read {ret.myfile}.prj");
-                return null;
-            }
-			// Load Indexes
-			var bix = QuickStream.ReadFile($"{ret.myfile}.Index");
-			byte tag;
-			dvIndex Index;
-			GUI.WriteLn($"Loading indexes for project: {prjname}");
-			while (!bix.EOF) {
-				//if (bix.EOF) { Console.WriteLine($"ERROR! Record {want} not found"); goto closure; } // I hate the "goto" command but in this particular case it's the safest way to go! (No I do miss the "defer" keyword Go has!)
-				tag = bix.ReadByte();
-				if (tag != 0) { GUI.WriteLn($"ERROR! Unknown index command tag {tag}!"); ret=null; goto closure; }
-				Index = new dvIndex();
-				Index.id = bix.ReadInt();
-				Index.size = bix.ReadLong();
-				Index.offset = bix.ReadLong();
-				if (ret.Indexes.ContainsKey(Index.id)) GUI.WriteLn($"WARNING!!! Duplicate index #{Index.id}. One of them will overwrite another");
-				ret.Indexes[Index.id] = Index;
-				//einde = offset + size;
-			} //while (id != want);//(id < 0 || id < min || id > max);
-			LoadedProjects[prjname] = ret;
-			GUI.WriteLn($"Records:        {ret.CountRecords}");
-			GUI.WriteLn($"Highest number: {ret.HighestRecordNumber}");
-			ret.Data.CL("CDPREFIX");
-			dvPrefix pref = null;
-			foreach (string iline in ret.Data.List("CDPREFIX")){
-				var line = iline.Trim();
-				if (line!=""){
-					var p = line.IndexOf(':');
-					if (p<0) {
-						GUI.WriteLn("Invalid Prefix definition!");
-					} else {
-						var key = line.Substring(0, p).Trim().ToUpper();
-						var value = line.Substring(p+1).Trim();
-						if (key=="NEW") {
-							pref = new dvPrefix();
-							ret.Prefixes[value] = pref;
-							GUI.WriteLn($"Prefix added:   {value}");
-						} else if (pref==null){
-							GUI.WriteLn("Definition without prefix! Please check your prefix settings!");
+        static public dvProject Get(string prjname) {
+			try {
+				if (LoadedProjects.ContainsKey(prjname)) return LoadedProjects[prjname];
+				GUI.WriteLn($"Loading project: {prjname}");
+				var ret = new dvProject();
+				ret.myname = prjname;
+				ret.myfile = $"{MainClass.WorkSpace}/Projects/{ret.myname}";
+				try {
+					ret.Data = GINI.ReadFromFile($"{ret.myfile}.prj");
+				} catch {
+					GUI.WriteLn($"ERROR:\tI could not read {ret.myfile}.prj");
+					QuickGTK.Error($"!!ERROR!!\n\nI could not read {ret.myfile}.prj");
+					return null;
+				} finally {
+					GUI.WriteLn("Complete!");
+				}
+				if (ret.Data == null) {
+					GUI.WriteLn($"ERROR:\tI could not read {ret.myfile}.prj");
+					QuickGTK.Error($"!!ERROR!!\n\nI could not read {ret.myfile}.prj");
+					return null;
+				}
+				// Load Indexes
+				var bix = QuickStream.ReadFile($"{ret.myfile}.Index");
+				byte tag;
+				dvIndex Index;
+				GUI.WriteLn($"Loading indexes for project: {prjname}");
+				while (!bix.EOF) {
+					//if (bix.EOF) { Console.WriteLine($"ERROR! Record {want} not found"); goto closure; } // I hate the "goto" command but in this particular case it's the safest way to go! (No I do miss the "defer" keyword Go has!)
+					tag = bix.ReadByte();
+					if (tag != 0) { GUI.WriteLn($"ERROR! Unknown index command tag {tag}!"); ret = null; goto closure; }
+					Index = new dvIndex();
+					Index.id = bix.ReadInt();
+					Index.size = bix.ReadLong();
+					Index.offset = bix.ReadLong();
+					if (ret.Indexes.ContainsKey(Index.id)) GUI.WriteLn($"WARNING!!! Duplicate index #{Index.id}. One of them will overwrite another");
+					ret.Indexes[Index.id] = Index;
+					//einde = offset + size;
+				} //while (id != want);//(id < 0 || id < min || id > max);
+				LoadedProjects[prjname] = ret;
+				GUI.WriteLn($"Records:        {ret.CountRecords}");
+				GUI.WriteLn($"Highest number: {ret.HighestRecordNumber}");
+				ret.Data.CL("CDPREFIX");
+				dvPrefix pref = null;
+				foreach (string iline in ret.Data.List("CDPREFIX")) {
+					var line = iline.Trim();
+					if (line != "") {
+						var p = line.IndexOf(':');
+						if (p < 0) {
+							GUI.WriteLn("Invalid Prefix definition!");
 						} else {
-							pref.RawSet(key, value);
-							Console.WriteLine($"Prefix[\"{key}\"]=\"{value}\";");
+							var key = line.Substring(0, p).Trim().ToUpper();
+							var value = line.Substring(p + 1).Trim();
+							if (key == "NEW") {
+								pref = new dvPrefix();
+								ret.Prefixes[value] = pref;
+								GUI.WriteLn($"Prefix added:   {value}");
+							} else if (pref == null) {
+								GUI.WriteLn("Definition without prefix! Please check your prefix settings!");
+							} else {
+								pref.RawSet(key, value);
+								Console.WriteLine($"Prefix[\"{key}\"]=\"{value}\";");
+							}
 						}
 					}
 				}
-			}
-		closure:
-			bix.Close();
-			return ret;
+			closure:
+				bix.Close();
+				return ret;
+			} catch (Exception E) {
+				QuickGTK.Error(E.Message);
+				return null;
+            }
         }
 
 		public void SaveIndexes(){

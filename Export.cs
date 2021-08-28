@@ -52,12 +52,12 @@ namespace Devlog
 		static public void Gen(){
 			string template;
 			var cp = CurrentProject; if (cp == null) { GUI.WriteLn("GEN: No project!"); return; }
-            try {
-                System.IO.Directory.CreateDirectory(OutDir);
-            } catch(Exception e) {
-                GUI.WriteLn($"GEN: {e.Message}");
-                return;
-            }
+			try {
+				System.IO.Directory.CreateDirectory(OutDir);
+			} catch(Exception e) {
+				GUI.WriteLn($"GEN: {e.Message}");
+				return;
+			}
 			int pages = cp.CountRecords / 200;
 			int page = 1;
 			int pcountdown = 200;
@@ -89,20 +89,21 @@ namespace Devlog
 					string headstyle = cp.Data.C($"HEAD.{rec.Tag.ToUpper()}");
 					string contentstyle = cp.Data.C($"INHD.{rec.Tag.ToUpper()}");
 					content.Append($"<tr valign=top><td align=left><a id='dvRec_{rec.RecID}'></a>{rec.Time}</td><td style=\"{headstyle}\">{rec.Tag}</td><td style='width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; {contentstyle}'><div style=\"width: { cp.GetDataDefaultInt("EXPORT.CONTENTWIDTH", 800)}; overflow-x:auto;\">");
-                    var alticon = cp.Data.C($"ICON.{rec.Tag.ToUpper()}").Trim();
-                    if (alticon == "") {
-                        var icon = $"{OutDir}/Icons/{rec.Tag.ToLower()}";
-                        var neticon = $"Icons/{rec.Tag.ToLower()}";
-                        neticon = neticon.Replace("#", "%23");
-                        icon = icon.Replace("#", "hashtag");
-                        foreach (string pfmt in iconext) {
-                            var iconfile = $"{icon}.{pfmt}";
-                            iconfile = iconfile.Replace("#", "%23");
-                            if (System.IO.File.Exists(iconfile)) { content.Append( $"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")}; height:{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)}' src='{neticon}.{pfmt}' alt='{rec.Tag}'>"); break; }
-                        }
-                    } else {
-                        content.Append($"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")}; height:{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)}' src='{alticon}' alt='{rec.Tag}'>"); 
-                    }
+					var alticon = cp.Data.C($"ICON.{rec.Tag.ToUpper()}").Trim();
+					if (alticon == "") {
+						var icon = $"{OutDir}/Icons/{rec.Tag.ToLower()}";
+						var neticon = $"Icons/{rec.Tag.ToLower()}";
+						neticon = neticon.Replace("#", "%23");
+						icon = icon.Replace("#", "hashtag");
+						foreach (string pfmt in iconext) {
+							var iconfile = $"{icon}.{pfmt}";
+							iconfile = iconfile.Replace("#", "%23");
+							if (System.IO.File.Exists(iconfile)) { content.Append( $"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")}; height:{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)}' src='{neticon}.{pfmt}' alt='{rec.Tag}'>"); break; }
+						}
+					} else {
+						//content.Append($"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")}; height:{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)};'  src='{alticon}' alt='{rec.Tag}'>"); 
+						content.Append($"<img style='float:{cp.GetDataDefault("EXPORT.ICONFLOATPOSITION", "Right")};' height='{cp.GetDataDefaultInt("EXPORT.ICONHEIGHT", 50)}' src='{alticon}' alt='{rec.Tag}'>");
+					}
 					content .Append( $"{rec.Text}</div></td></tr>\n");
 					pcountdown--;
 					if (pcountdown <= 0) {

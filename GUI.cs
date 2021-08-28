@@ -36,7 +36,7 @@ using TrickyUnits.GTK;
 using Gtk;
 namespace Devlog
 {
-    delegate void GenCallBack(object sender, EventArgs a);
+	delegate void GenCallBack(object sender, EventArgs a);
 
 	public static class GUI
 	{
@@ -51,7 +51,7 @@ namespace Devlog
 		static HBox TagEditBox;
 		static Entry TagEditHead;
 		static Entry TagEditEntry;
-        static Entry TagEditIcon;
+		static Entry TagEditIcon;
 		static bool AllowEdit = true;
 		static public string CurrentProjectName = "";
 		static dvProject CurrentProject { get { if (CurrentProjectName == "") return null; return dvProject.Get(CurrentProjectName); } }// Acutal return comes later!
@@ -60,17 +60,21 @@ namespace Devlog
 		static ListBox CommandHistory;
 		static TreeView PrefixTable;
 
-        static public void SetPrompt(string s) { Prompt.Text = s; }
+		static public void SetPrompt(string s) { Prompt.Text = s; }
 
 		static Dictionary<string, Entry> GenEntries = new Dictionary<string, Entry>();
 
 		public static void ClearHistory() => CommandHistory.Clear();
 
-		static void AndACTION(object sender, EventArgs a)
-		{
-            var cmd = Prompt.Text;
+		static void AndACTION(object sender, EventArgs a) {
+			var cmd = Prompt.Text;
 			Prompt.Text = "";
 			CommandHistory.AddItem(cmd);
+			for (int i = 0; i < cmd.Length; ++i)
+				if (cmd[i] < 32 || cmd[i] > 126) {
+					QuickGTK.Error($"Non ASCII character found on position: {i} -> {cmd[i]}/{(int)cmd[i]}/{((int)cmd[i]).ToString("X")}");
+					return;
+				}
 			CommandClass.DoCommand(cmd);
 		}
 
@@ -184,23 +188,23 @@ namespace Devlog
 			var tv = TagList.Gadget; sw.Add(tv);
 			var lb1 = new Label("Head"); lb1.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
 			var lb2 = new Label("Content"); lb2.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
-            var lb3 = new Label("Icon"); lb3.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
-            TagEditHead = new Entry(); RequireTag.Add(TagEditHead);
+			var lb3 = new Label("Icon"); lb3.ModifyFg(StateType.Normal, new Gdk.Color(0, 180, 255));
+			TagEditHead = new Entry(); RequireTag.Add(TagEditHead);
 			TagEditEntry = new Entry(); RequireTag.Add(TagEditEntry);
-            TagEditIcon = new Entry(); RequireTag.Add(TagEditIcon);
+			TagEditIcon = new Entry(); RequireTag.Add(TagEditIcon);
 			TagEditBox.Add(lb1);
 			TagEditBox.Add(TagEditHead);
 			TagEditBox.Add(lb2);
 			TagEditBox.Add(TagEditEntry);
-            TagEditBox.Add(lb3);
-            TagEditBox.Add(TagEditIcon);
+			TagEditBox.Add(lb3);
+			TagEditBox.Add(TagEditIcon);
 			panel.Add(TagEditBox);
 			TagList.Gadget.RulesHint = true;
 			RequireProject.Add(TagList.Gadget);
 			TagList.Gadget.CursorChanged += OnTagSelect;
 			TagEditHead.Changed += OnEditTag;
 			TagEditEntry.Changed += OnEditTag;
-            TagEditIcon.Changed += OnEditTag;
+			TagEditIcon.Changed += OnEditTag;
 		}
 
 		static public void UpdateTags()
@@ -217,7 +221,7 @@ namespace Devlog
 			var tag = TagList.ItemText;
 			TagEditHead.Text = CurrentProject.GetData($"HEAD.{tag}");
 			TagEditEntry.Text = CurrentProject.GetData($"INHD.{tag}");
-            TagEditIcon.Text = CurrentProject.GetData($"ICON.{tag}");
+			TagEditIcon.Text = CurrentProject.GetData($"ICON.{tag}");
 			AllowEdit = true;
 			AutoEnable();
 		}
@@ -228,7 +232,7 @@ namespace Devlog
 			var s = (Entry)sender;
 			var h = "INHD";
 			if (s == TagEditHead) h = "HEAD";
-            if (s == TagEditIcon) h = "ICON";
+			if (s == TagEditIcon) h = "ICON";
 			CurrentProject.DefData($"{h}.{TagList.ItemText}", s.Text);
 		}
 
@@ -376,117 +380,117 @@ namespace Devlog
 		}
 
 		public static void Init()
-        {
-            MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
-            MKL.Version("Development Log - GUI.cs","20.07.24");
-            Application.Init();
-            win = new MainWindow();
-            win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
-            win.SetSizeRequest(1200, 800);
-            win.Resizable = false;
-            win.Title = $"Development log - version {MKL.Newest} - Coded by: Tricky";
-            Tabber = new Notebook(); Tabber.SetSizeRequest(1000, 770);
-            Tabber.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 20));
-            Console = new TextView();
-            Console.Editable = false;
+		{
+			MKL.Lic    ("Development Log - GUI.cs","GNU General Public License 3");
+			MKL.Version("Development Log - GUI.cs","20.07.24");
+			Application.Init();
+			win = new MainWindow();
+			win.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
+			win.SetSizeRequest(1200, 800);
+			win.Resizable = false;
+			win.Title = $"Development log - version {MKL.Newest} - Coded by: Tricky";
+			Tabber = new Notebook(); Tabber.SetSizeRequest(1000, 770);
+			Tabber.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 20));
+			Console = new TextView();
+			Console.Editable = false;
 			Console.ModifyFont(Pango.FontDescription.FromString("Courier 18"));
 			Console.SizeAllocated += new SizeAllocatedHandler(ConsoleDOWN);
 			Prompt = new Entry();
-            var overlord = new VBox();
-            var superior = new HBox();
-            var sidebar = new VBox(); sidebar.SetSizeRequest(200, 770);
-            var mainarea = new VBox();
-            var cscroll = new ScrolledWindow();
-            var promptbar = new HBox();
-            InitSidebar(sidebar);
-            win.Add(overlord);
-            overlord.Add(superior); superior.SetSizeRequest(1200, 600);
-            overlord.Add(cscroll); cscroll.SetSizeRequest(1200, 170); cscroll.Add(Console);
-            overlord.Add(promptbar); promptbar.SetSizeRequest(1200, 30); promptbar.Add(Prompt);
-            var pOk = new Button("Ok");
-            pOk.SetSizeRequest(50, 30);
-            pOk.Clicked += AndACTION;
+			var overlord = new VBox();
+			var superior = new HBox();
+			var sidebar = new VBox(); sidebar.SetSizeRequest(200, 770);
+			var mainarea = new VBox();
+			var cscroll = new ScrolledWindow();
+			var promptbar = new HBox();
+			InitSidebar(sidebar);
+			win.Add(overlord);
+			overlord.Add(superior); superior.SetSizeRequest(1200, 600);
+			overlord.Add(cscroll); cscroll.SetSizeRequest(1200, 170); cscroll.Add(Console);
+			overlord.Add(promptbar); promptbar.SetSizeRequest(1200, 30); promptbar.Add(Prompt);
+			var pOk = new Button("Ok");
+			pOk.SetSizeRequest(50, 30);
+			pOk.Clicked += AndACTION;
 			Prompt.Activated += AndACTION;
-            Prompt.SetSizeRequest(1150, 30);
-            promptbar.Add(pOk);
-            Console.ModifyBase(StateType.Normal, new Gdk.Color(0, 20, 0));
-            Console.ModifyText(StateType.Normal, new Gdk.Color(0, 255, 0));
-            Prompt.ModifyBase(StateType.Normal, new Gdk.Color(25, 18, 0));
-            Prompt.ModifyText(StateType.Normal, new Gdk.Color(255, 180, 0));
-            superior.Add(sidebar);
-            superior.Add(mainarea);
-            mainarea.Add(Tabber);
-            GeneralInit(NewTab("General"));
-            TagsInit(NewTab("Tags"));
+			Prompt.SetSizeRequest(1150, 30);
+			promptbar.Add(pOk);
+			Console.ModifyBase(StateType.Normal, new Gdk.Color(0, 20, 0));
+			Console.ModifyText(StateType.Normal, new Gdk.Color(0, 255, 0));
+			Prompt.ModifyBase(StateType.Normal, new Gdk.Color(25, 18, 0));
+			Prompt.ModifyText(StateType.Normal, new Gdk.Color(255, 180, 0));
+			superior.Add(sidebar);
+			superior.Add(mainarea);
+			mainarea.Add(Tabber);
+			GeneralInit(NewTab("General"));
+			TagsInit(NewTab("Tags"));
 			InitEntries(NewTab("Entries"));
 			InitPrefix(NewTab("AutoPrefix"));
 			InitHistory(NewTab("Command History"));
-            WriteLn("Welcome to Devlog!");
-            WriteLn("Coded by: Tricky");
-            WriteLn($"(c) 2016-20{qstr.Left(MKL.Newest,2)} Jeroen P. Broks");
-            WriteLn("Released under the terms of the General Public License v3\n");
-            AutoEnable();
+			WriteLn("Welcome to Devlog!");
+			WriteLn("Coded by: Tricky");
+			WriteLn($"(c) 2016-20{qstr.Left(MKL.Newest,2)} Jeroen P. Broks");
+			WriteLn("Released under the terms of the General Public License v3\n");
+			AutoEnable();
 //#if KEYDEBUG
-            //WriteLn("KEYDEBUG is set!");
-            //Prompt.KeyPressEvent += KeyDebug;
-            //Prompt.KeyPressEvent += StoreProperty;
+			//WriteLn("KEYDEBUG is set!");
+			//Prompt.KeyPressEvent += KeyDebug;
+			//Prompt.KeyPressEvent += StoreProperty;
 //#endif
 
-        }
+		}
 
-        /*
+		/*
 //#if KEYDEBUG
-        static void StoreProperty(object o, KeyPressEventArgs args)
-        {
-            Gdk.EventKey key = args.Event;
-            System.Console.WriteLine(key.KeyValue);
-            if (key.KeyValue == (uint)Gdk.Key.Return)
-            {
-                System.Console.WriteLine("YO!");
-            }
-        }
+		static void StoreProperty(object o, KeyPressEventArgs args)
+		{
+			Gdk.EventKey key = args.Event;
+			System.Console.WriteLine(key.KeyValue);
+			if (key.KeyValue == (uint)Gdk.Key.Return)
+			{
+				System.Console.WriteLine("YO!");
+			}
+		}
 
 
-        public static void KeyDebug(object sender,KeyPressEventArgs a){
-            System.Console.WriteLine($"Key pressed {a.Event.KeyValue}");
-            WriteLn($"Key pressed {a.Event.KeyValue}");
-        }
+		public static void KeyDebug(object sender,KeyPressEventArgs a){
+			System.Console.WriteLine($"Key pressed {a.Event.KeyValue}");
+			WriteLn($"Key pressed {a.Event.KeyValue}");
+		}
 //#endif
-        */
+		*/
 
-        public static void Write(string yeah,bool wantvars=false) {
-            var result = yeah;
-            if (wantvars && CurrentProject!=null) {
+		public static void Write(string yeah,bool wantvars=false) {
+			var result = yeah;
+			if (wantvars && CurrentProject!=null) {
 				var vs = CurrentProject.Data.Vars();
-                foreach (string clown in vs) 
-                    if (qstr.Prefixed(clown, "VAR."))
-                    {
-                        var wvar = clown.Substring(4);
-                        var oldresult = "";
-                        do
-                        {
-                            oldresult = result;
+				foreach (string clown in vs) 
+					if (qstr.Prefixed(clown, "VAR."))
+					{
+						var wvar = clown.Substring(4);
+						var oldresult = "";
+						do
+						{
+							oldresult = result;
 							result = result.Replace($"${wvar}", CurrentProject.Data.C(clown));
-                        } while (oldresult != result);
-                    }
-            }
-            Console.Buffer.Text += result; 
-        }
+						} while (oldresult != result);
+					}
+			}
+			Console.Buffer.Text += result; 
+		}
 
-        public static void WriteLn(string yeah,bool wantvars=false) => Write($"{yeah}\n",wantvars);
+		public static void WriteLn(string yeah,bool wantvars=false) => Write($"{yeah}\n",wantvars);
 
-        public static VBox NewTab(string caption){
-            var ret = new VBox();
-            var lab = new Label(caption);
-            lab.ModifyFg(StateType.Normal, new Gdk.Color(255, 255, 0));
-            Tabber.AppendPage(ret, lab);
-            return ret;
-        }
+		public static VBox NewTab(string caption){
+			var ret = new VBox();
+			var lab = new Label(caption);
+			lab.ModifyFg(StateType.Normal, new Gdk.Color(255, 255, 0));
+			Tabber.AppendPage(ret, lab);
+			return ret;
+		}
 
-        public static void Start(){
-            win.ShowAll();
-            Application.Run();
-        }
+		public static void Start(){
+			win.ShowAll();
+			Application.Run();
+		}
 
-    }
+	}
 }
