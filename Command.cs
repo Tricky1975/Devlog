@@ -32,30 +32,30 @@ using TrickyUnits.GTK;
 namespace Devlog
 {
 
-    delegate void MyCommand(string arg);
+	delegate void MyCommand(string arg);
 
-    static class CommandClass
-    {
+	static class CommandClass
+	{
 		static Random myrand = new Random();
 		static int Rand(int min, int max) => myrand.Next(min, max);
 		static dvProject CurrentProject { get { if (GUI.CurrentProjectName == "") return null; return dvProject.Get(GUI.CurrentProjectName); } }// Acutal return comes later!
-        static public readonly Dictionary<string, MyCommand> Commands = new Dictionary<string, MyCommand>();
+		static public readonly Dictionary<string, MyCommand> Commands = new Dictionary<string, MyCommand>();
 
-        static void Annoy(string arg) => QuickGTK.Info(arg); // This is just a test ;)
+		static void Annoy(string arg) => QuickGTK.Info(arg); // This is just a test ;)
 
-        static public void Bye(string unneeded){
-            // TODO: Some saving stuff will take place here later!
-        }
+		static public void Bye(string unneeded){
+			// TODO: Some saving stuff will take place here later!
+		}
 
 
-        static void GlobalConfig(string cfga){
-            var c = cfga.Trim();
-            var p = c.IndexOf('=');
-            var cfield = c.Substring(0, p).ToUpper();
-            var cvalue = c.Substring(p + 1);
-            MainClass.DefConfig(cfield, cvalue);
-            GUI.WriteLn($"Global Config Variable: {cfield} = {cvalue}");
-        }
+		static void GlobalConfig(string cfga){
+			var c = cfga.Trim();
+			var p = c.IndexOf('=');
+			var cfield = c.Substring(0, p).ToUpper();
+			var cvalue = c.Substring(p + 1);
+			MainClass.DefConfig(cfield, cvalue);
+			GUI.WriteLn($"Global Config Variable: {cfield} = {cvalue}");
+		}
 
 		static void LetVar(string koe){
 			var p = koe.IndexOf('=');
@@ -100,16 +100,16 @@ namespace Devlog
 			var cp = CurrentProject;
 			if (cp == null) { GUI.WriteLn("ADD: No project!"); return; }
 			if (!cp.GotTag(tag)) { GUI.WriteLn($"ADD: Tag {tag} does not exist!"); return; }
-            // Prefix handling
-            var MustSave = false;
+			// Prefix handling
+			var MustSave = false;
 			foreach (string id in cp.Prefixes.Keys) {
 				var pf = cp.Prefixes[id];
 				pf.CD--;
 				//GUI.WriteLn($"Prefix {id} CD at: {pf.CD}/{pf.Reset}");
 				if (pf.CD <= 0) { content = $"{pf.Prefix} {content}"; pf.CD += Math.Abs(pf.Reset); MustSave = true; }
 			}
-            if (MustSave) cp.SaveMe();
-            var e = new dvEntry(cp, tag, content);
+			if (MustSave) cp.SaveMe();
+			var e = new dvEntry(cp, tag, content);
 			GUI.WriteLn($"Added entry #{e.RecID}");
 			GUI.UpdateEntries(cp.HighestRecordNumber-200,cp.HighestRecordNumber);
 			GUI.UpdatePrefix();
@@ -158,48 +158,70 @@ namespace Devlog
 			if (!OURI.OpenUri(result)) GUI.WriteLn($"ERROR! Opening URL {result} failed!");
 		}
 
-        static void Create(string project) {
-            GUI.WriteLn("Creating project");
-            var prj = project.Replace(" ", "_").Replace("/", ".").Replace("\\", ".");
-            var np = new dvProject(prj); np.Data.CL("TAGS");
-            GUI.WriteLn($"Codename: {np.PrjName}, using file {np.PrjName}");
-            GUI.WriteLn("Setting up base tags");
-            var tags = np.Data.List("TAGS");
-            tags.Add("SITE");
-            tags.Add("GENERAL");
-            tags.Add("BUG");
-            tags.Add("FIXED");
-            GUI.WriteLn("Configuring Base tags");
-            np.DefData($"HEAD.SITE", $"background-color:rgb(0,0,0); color:rgb(255,255,255);");
-            np.DefData($"INHD.SITE", $"background-color:rgb(127,127,127); color:rgb(255,255,255);");
-            np.DefData($"HEAD.GENERAL", $"background-color:rgb(0,0,0); color:rgb(0,255,255);");
-            np.DefData($"INHD.GENERAL", $"background-color:rgb(0,127,127); color:rgb(0,255,255);");
-            np.DefData($"HEAD.BUG", $"background-color:rgb(0,0,0); color:rgb(255,0,0);");
-            np.DefData($"INHD.BUG", $"background-color:rgb(127,0,0); color:rgb(255,0,0);");
-            np.DefData($"HEAD.FIXED", $"background-color:rgb(0,0,0); color:rgb(255,0,0);");
-            np.DefData($"INHD.FIXED", $"background-color:rgb(0,127,0); color:rgb(0,255,0);");
-            GUI.WriteLn("First entry!");
-            new dvEntry(np, "SITE", $"Devlog created on {DateTime.Now.ToLongDateString()}; {DateTime.Now.ToLongTimeString()}.<p>Codenamed: {prj}");
-            GUI.WriteLn("Saving for security's sake");
-            np.SaveMe();
-            GUI.WriteLn("Renew project list");
-            GUI.RenewProjects();
-            GUI.WriteLn($"Project {prj} has been created");
-        }
+		static int Takes {
+			get {
+				if (CurrentProject == null) { Annoy("No project!"); return 0; }
+				return Math.Max(0, qstr.ToInt(CurrentProject.Data.C("TAKES")));
+			}
+			set {
+				if (CurrentProject == null) { Annoy("No project!"); return; }
+				CurrentProject.Data.D("TAKES", $"{value}");
+			}
+		}
+		static void Take(string n) {
+			if (CurrentProject==null) { Annoy("No project!"); return; }
+			if (n.Trim() == "")
+				Takes++;
+			else if (n.Trim() == "RESET")
+				Takes = 1;
+			else
+				Takes = Math.Max(1, qstr.ToInt(n.Trim()));
+			if (!CurrentProject.GotTag("TEST")) NewTag("TEST");
+			AddEntry($"TEST Take {Roman.ToRoman(Takes)}");
+		}
 
-        static public void Init()
-        {
-            MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
-            MKL.Version("Development Log - Command.cs","20.07.24");
-            Commands["ANNOY"] = Annoy;
-            Commands["BYE"] = Bye;
+		static void Create(string project) {
+			GUI.WriteLn("Creating project");
+			var prj = project.Replace(" ", "_").Replace("/", ".").Replace("\\", ".");
+			var np = new dvProject(prj); np.Data.CL("TAGS");
+			GUI.WriteLn($"Codename: {np.PrjName}, using file {np.PrjName}");
+			GUI.WriteLn("Setting up base tags");
+			var tags = np.Data.List("TAGS");
+			tags.Add("SITE");
+			tags.Add("GENERAL");
+			tags.Add("BUG");
+			tags.Add("FIXED");
+			GUI.WriteLn("Configuring Base tags");
+			np.DefData($"HEAD.SITE", $"background-color:rgb(0,0,0); color:rgb(255,255,255);");
+			np.DefData($"INHD.SITE", $"background-color:rgb(127,127,127); color:rgb(255,255,255);");
+			np.DefData($"HEAD.GENERAL", $"background-color:rgb(0,0,0); color:rgb(0,255,255);");
+			np.DefData($"INHD.GENERAL", $"background-color:rgb(0,127,127); color:rgb(0,255,255);");
+			np.DefData($"HEAD.BUG", $"background-color:rgb(0,0,0); color:rgb(255,0,0);");
+			np.DefData($"INHD.BUG", $"background-color:rgb(127,0,0); color:rgb(255,0,0);");
+			np.DefData($"HEAD.FIXED", $"background-color:rgb(0,0,0); color:rgb(255,0,0);");
+			np.DefData($"INHD.FIXED", $"background-color:rgb(0,127,0); color:rgb(0,255,0);");
+			GUI.WriteLn("First entry!");
+			new dvEntry(np, "SITE", $"Devlog created on {DateTime.Now.ToLongDateString()}; {DateTime.Now.ToLongTimeString()}.<p>Codenamed: {prj}");
+			GUI.WriteLn("Saving for security's sake");
+			np.SaveMe();
+			GUI.WriteLn("Renew project list");
+			GUI.RenewProjects();
+			GUI.WriteLn($"Project {prj} has been created");
+		}
+
+		static public void Init()
+		{
+			MKL.Lic    ("Development Log - Command.cs","GNU General Public License 3");
+			MKL.Version("Development Log - Command.cs","20.07.24");
+			Commands["ANNOY"] = Annoy;
+			Commands["BYE"] = Bye;
 			Commands["SAY"] = delegate (string yeah) { GUI.WriteLn(yeah, true); };
-            Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };
-            Commands["YULERIA"] = delegate { Annoy("Yuleria's rule of revenge:\nAn amateur kills people! A professional makes them suffer!"); };
-            Commands["GLOBALCONFIG"] = GlobalConfig;
-            Commands["USE"] = delegate (string useme) { GUI.Use(useme); };
-            Commands["SYSVARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) GUI.WriteLn(v); };
-            Commands["VARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) if (qstr.Prefixed(v,"VAR.")) GUI.WriteLn(v); };
+			Commands["FUCK"] = delegate { Annoy("Did your mother never teach you not to say such words?"); };
+			Commands["YULERIA"] = delegate { Annoy("Yuleria's rule of revenge:\nAn amateur kills people! A professional makes them suffer!"); };
+			Commands["GLOBALCONFIG"] = GlobalConfig;
+			Commands["USE"] = delegate (string useme) { GUI.Use(useme); };
+			Commands["SYSVARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) GUI.WriteLn(v); };
+			Commands["VARS"] = delegate { if (CurrentProject == null) { GUI.WriteLn("No project!"); return; } foreach (string v in CurrentProject.Data.Vars()) if (qstr.Prefixed(v,"VAR.")) GUI.WriteLn(v); };
 			Commands["LET"] = LetVar;
 			Commands["NEWTAG"] = NewTag;
 			Commands["ADDTAG"] = NewTag;
@@ -218,53 +240,54 @@ namespace Devlog
 			Commands["RM"] = Delete;
 			Commands["REMOVE"] = Delete;
 			Commands["DEL"] = Delete;
-            Commands["CREATE"] = Create;
-            Commands["SAVE"] = delegate { if (CurrentProject != null) { CurrentProject.SaveMe(); GUI.WriteLn("Saved!"); } else Annoy("No Project!"); };
-            Commands["EDIT"] = delegate (string num) {
-                if (CurrentProject == null) { Annoy("No Project!"); return; }
-                var e = new dvEntry(CurrentProject, qstr.ToInt(num), true);
-                if (e==null) { Annoy("Entry couldn't be accessed!"); return; }
-                GUI.SetPrompt($"MODIFY {num} {e.Tag} {e.Pure}");
-            };
-            Commands["MODIFY"] = delegate (string str) {
-                var args = str.Split(' ');
-                if (CurrentProject == null) { Annoy("No Project!"); return; }
-                if (args.Length<3) { Annoy("Modify syntax error!"); return; }
-                var num = qstr.ToInt(args[0]);
-                var e = new dvEntry(CurrentProject, num, true);
-                if (e == null) { Annoy("Entry couldn't be accessed!"); return; }
-                var tag = args[1].ToUpper();
-                if (!CurrentProject.GotTag(tag)) { Annoy($"There's no tag: {tag}"); return; }
-                var sb = new System.Text.StringBuilder();
-                e.Tag = tag;
-                for (int i = 2; i < args.Length; ++i) sb.Append($"{args[i]} ");
-                e.Pure = sb.ToString().Trim();
-                GUI.UpdateEntries(CurrentProject.HighestRecordNumber - 200, CurrentProject.HighestRecordNumber);
-            };
+			Commands["CREATE"] = Create;
+			Commands["SAVE"] = delegate { if (CurrentProject != null) { CurrentProject.SaveMe(); GUI.WriteLn("Saved!"); } else Annoy("No Project!"); };
+			Commands["TAKE"] = Take;
+			Commands["EDIT"] = delegate (string num) {
+				if (CurrentProject == null) { Annoy("No Project!"); return; }
+				var e = new dvEntry(CurrentProject, qstr.ToInt(num), true);
+				if (e==null) { Annoy("Entry couldn't be accessed!"); return; }
+				GUI.SetPrompt($"MODIFY {num} {e.Tag} {e.Pure}");
+			};
+			Commands["MODIFY"] = delegate (string str) {
+				var args = str.Split(' ');
+				if (CurrentProject == null) { Annoy("No Project!"); return; }
+				if (args.Length<3) { Annoy("Modify syntax error!"); return; }
+				var num = qstr.ToInt(args[0]);
+				var e = new dvEntry(CurrentProject, num, true);
+				if (e == null) { Annoy("Entry couldn't be accessed!"); return; }
+				var tag = args[1].ToUpper();
+				if (!CurrentProject.GotTag(tag)) { Annoy($"There's no tag: {tag}"); return; }
+				var sb = new System.Text.StringBuilder();
+				e.Tag = tag;
+				for (int i = 2; i < args.Length; ++i) sb.Append($"{args[i]} ");
+				e.Pure = sb.ToString().Trim();
+				GUI.UpdateEntries(CurrentProject.HighestRecordNumber - 200, CurrentProject.HighestRecordNumber);
+			};
 
 
-        }
+		}
 
-        static void ThrowError(string error){
-            GUI.WriteLn($"ERROR:\t{error}");
-            QuickGTK.Error($"!!ERROR!!\n\n{error}");
-        }
+		static void ThrowError(string error){
+			GUI.WriteLn($"ERROR:\t{error}");
+			QuickGTK.Error($"!!ERROR!!\n\n{error}");
+		}
 
-        static public void DoCommand(string command){
-            var c = command.Trim();
-            var p = c.IndexOf(' ');
-            string cmd;
-            string arg;
-            if (p < 0) { cmd = c.ToUpper(); arg = ""; } else {
-                cmd = c.Substring(0, p).ToUpper();
-                arg = c.Substring(p + 1);
-            }
-            if (!Commands.ContainsKey(cmd)) ThrowError($"I do not understand the command {cmd}!!"); else Commands[cmd](arg);            
-        }
+		static public void DoCommand(string command){
+			var c = command.Trim();
+			var p = c.IndexOf(' ');
+			string cmd;
+			string arg;
+			if (p < 0) { cmd = c.ToUpper(); arg = ""; } else {
+				cmd = c.Substring(0, p).ToUpper();
+				arg = c.Substring(p + 1);
+			}
+			if (!Commands.ContainsKey(cmd)) ThrowError($"I do not understand the command {cmd}!!"); else Commands[cmd](arg);            
+		}
 
-        static public void DoCommands(string[] commands) {
-            foreach (string cmd in commands) DoCommand(cmd);
-        }
+		static public void DoCommands(string[] commands) {
+			foreach (string cmd in commands) DoCommand(cmd);
+		}
 
-    }
+	}
 }

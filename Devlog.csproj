@@ -58,6 +58,9 @@
     <EmbeddedResource Include="Mascot\Mascot.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\TrickyUnits\Roman.cs">
+      <Link>Dependencies\TrickyUnits\Roman.cs</Link>
+    </Compile>
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="gtk-gui\MainWindow.cs" />
