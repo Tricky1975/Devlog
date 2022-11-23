@@ -251,7 +251,7 @@ namespace Devlog
 				GUI.WriteLn($"Loading project: {prjname}");
 				var ret = new dvProject();
 				ret.myname = prjname;
-				ret.myfile = $"{MainClass.WorkSpace}/Projects/{ret.myname}";
+				ret.myfile = Dirry.AD($"{MainClass.WorkSpace}/Projects/{ret.myname}");
 				try {
 					ret.Data = GINI.ReadFromFile($"{ret.myfile}.prj");
 				} catch {

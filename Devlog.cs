@@ -31,7 +31,7 @@ namespace Devlog
 {
     class MainClass
     {
-        readonly static string configfile = Dirry.C("$AppSupport$/.DevlogConfig.GINI");
+        readonly static string configfile = Dirry.AD(Dirry.C("$AppSupport$/.DevlogConfig.GINI"));
         static TGINI vConfig = new TGINI();
         static public string Platform { get => vConfig.C("PLATFORM"); }
         static public string WorkSpace { get => vConfig.C("WORKSPACE"); }
@@ -96,6 +96,7 @@ namespace Devlog
 
         public static void Main(string[] args)
         {
+            Dirry.InitAltDrives();
             InitSubClasses();
             // TODO: args recognition!
             GUI.Init();
