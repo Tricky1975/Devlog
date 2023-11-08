@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using TrickyUnits;
 using TrickyUnits.GTK;
 
@@ -267,6 +268,11 @@ namespace Devlog
 					return null;
 				}
 				// Load Indexes
+				if (!File.Exists(ret.myfile)) {
+					GUI.WriteLn($"Creating index file: {ret.myname}");
+					var BT=QuickStream.WriteFile(ret.myfile);
+					BT.Close();
+				}
 				var bix = QuickStream.ReadFile($"{ret.myfile}.Index");
 				byte tag;
 				dvIndex Index;
@@ -389,13 +395,17 @@ namespace Devlog
 		}
 
 		public void SaveMe(){
-			Console.WriteLine($"Saving: {myfile}");
-			var CDPREFIX = Data.List("CDPREFIX");
-			CDPREFIX.Clear();
-			foreach(string key in Prefixes.Keys){
-				Prefixes[key].UnParse(key,CDPREFIX);
-			}
-			Data.SaveSource(myfile+".prj");
+			try {
+				Console.WriteLine($"Saving: {myfile}");
+				var CDPREFIX = Data.List("CDPREFIX");
+				CDPREFIX.Clear();
+				foreach (string key in Prefixes.Keys) {
+					Prefixes[key].UnParse(key, CDPREFIX);
+				}
+				Data.SaveSource(Dirry.AD(myfile + ".prj"));
+			} catch(Exception e) {
+                QuickGTK.Error($"!!ERROR!!\n\nI could not write {myfile}.prj\n\n{e.Message}");
+            }
 		}
 
 		public dvProject() {
